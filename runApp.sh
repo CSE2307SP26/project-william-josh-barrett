@@ -1,3 +1,9 @@
 #!/bin/bash
 
-#put commands here to compile and run your app from command line
+cd src/main
+javac MainMenu.java BankAccount.java
+cd ..
+java main.MainMenu
+rm main/BankAccount.class
+rm main/MainMenu.class
+cd ..
