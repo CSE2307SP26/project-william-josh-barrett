@@ -2,6 +2,8 @@ package main;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 
 public class MainMenu {
 
@@ -19,9 +21,20 @@ public class MainMenu {
     }
 
     public int scanInt() {
-        int integer = keyboardInput.nextInt();
-        keyboardInput.nextLine();
-        return integer;
+        while (true) {
+            try {
+                int integer = keyboardInput.nextInt();
+                keyboardInput.nextLine();
+                return integer;
+            } 
+            catch (InputMismatchException e) {
+                System.out.println("Invalid integer, please try again.");
+            }
+            catch (NoSuchElementException e) {
+                System.out.println("No input detected, please try again.");
+            }
+            keyboardInput.nextLine();
+        }
     }
 
     public void displayOptions() {
