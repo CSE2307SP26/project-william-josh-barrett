@@ -9,12 +9,12 @@ public class MainMenu {
 
     private static final int EMPTY = 0;
     private static enum startSelections {MIN, CREATE, EXIT, MAX}
-    private static enum accountSelections {MIN, DEPOSIT, SWITCH, CREATE, EXIT, MAX}
+    private static enum accountSelections {MIN, DEPOSIT, SWITCH, CREATE, CLOSE, EXIT, MAX}
 
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
     private Scanner keyboardInput;
     private boolean exit = false;
-    private int curAccount;
+    private int curAccountIndex;
 
     public MainMenu() {
         this.keyboardInput = new Scanner(System.in);
@@ -41,13 +41,16 @@ public class MainMenu {
         System.out.println("Welcome to the 237 Bank App!");
         
         if (accounts.size() == EMPTY) {
+            System.out.println("You are not currently logged in.");
             System.out.println("1. Create an account");
             System.out.println("2. Exit the app");
         } else {
+            System.out.println("Logged in as: " + accounts.get(curAccountIndex).getName());
             System.out.println("1. Make a deposit");
             System.out.println("2. Switch accounts");
             System.out.println("3. Create an account");
-            System.out.println("4. Exit the app");
+            System.out.println("4. Close an account");
+            System.out.println("5. Exit the app");
         }
     }
 
@@ -60,35 +63,54 @@ public class MainMenu {
         return selection;
     }
 
-    public void createAccount() {
-        System.out.print("Please enter the account name: ");
-        String name = keyboardInput.nextLine();
-        BankAccount new_account = new BankAccount(name);
-        accounts.add(new_account);
-        curAccount = accounts.size() - 1;
-    }
-
     public void performDeposit() {
         double depositAmount = -1;
         while(depositAmount < 0) {
             System.out.print("How much would you like to deposit: ");
             depositAmount = scanInt();
         }
-        accounts.get(curAccount).deposit(depositAmount);
+        accounts.get(curAccountIndex).deposit(depositAmount);
+    }
+
+    public void createAccount() {
+        System.out.print("Please enter the account name: ");
+        String name = keyboardInput.nextLine();
+        BankAccount new_account = new BankAccount(name);
+        accounts.add(new_account);
+        curAccountIndex = accounts.size() - 1;
+    }
+
+    public void closeAccount() {
+        printAccounts();
+        while(true) {
+            System.out.print("Please select an account to close: ");
+            int accountIndex = scanInt() - 1;
+            if (accountIndex < 0 || accountIndex >= accounts.size()) {continue;}
+            accounts.remove(accountIndex);
+            if (accounts.size() != EMPTY && accountIndex == curAccountIndex) {
+                switchAccounts();
+            }
+            if (accountIndex < curAccountIndex) {curAccountIndex--;}
+            break;
+        }
     }
 
     public void switchAccounts() {
+        printAccounts();
+        while(true) {
+            System.out.print("Please select an account to switch to: ");
+            int accountIndex = scanInt() - 1;
+            if (accountIndex < 0 || accountIndex >= accounts.size()) {continue;}
+            curAccountIndex = accountIndex;
+            break;
+        }
+    }
+
+    public void printAccounts() {
         int index = 1;
         for (BankAccount account : accounts) {
             System.out.println(index + ". " + account.getName());
             index++;
-        }
-        while(true) {
-            System.out.print("Please select an account: ");
-            int accountIndex = scanInt() - 1;
-            if (accountIndex < 0 || accountIndex >= accounts.size()) {continue;}
-            curAccount = accountIndex;
-            break;
         }
     }
 
@@ -124,6 +146,7 @@ public class MainMenu {
             case accountSelections.DEPOSIT: performDeposit(); break;
             case accountSelections.SWITCH: switchAccounts(); break;
             case accountSelections.CREATE: createAccount(); break;
+            case accountSelections.CLOSE: closeAccount(); break;
             case accountSelections.EXIT: exit = true; break;
             default: assert(false);
         }
