@@ -9,7 +9,7 @@ public class MainMenu {
 
     private static final int EMPTY = 0;
     private static enum startSelections {MIN, CREATE, EXIT, MAX}
-    private static enum accountSelections {MIN, DEPOSIT, SWITCH, CREATE, CLOSE, EXIT, MAX}
+    private static enum accountSelections {MIN, DEPOSIT, TRANSFER, SWITCH, CREATE, CLOSE, EXIT, MAX}
 
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
     private Scanner keyboardInput;
@@ -28,10 +28,10 @@ public class MainMenu {
                 return integer;
             } 
             catch (InputMismatchException e) {
-                System.out.println("Invalid integer, please try again.");
+                System.out.print("Invalid integer, please try again: ");
             }
             catch (NoSuchElementException e) {
-                System.out.println("No input detected, please try again.");
+                System.out.print("No input detected, please try again: ");
             }
             keyboardInput.nextLine();
         }
@@ -47,10 +47,11 @@ public class MainMenu {
         } else {
             System.out.println("Logged in as: " + accounts.get(curAccountIndex).getName());
             System.out.println("1. Make a deposit");
-            System.out.println("2. Switch accounts");
-            System.out.println("3. Create an account");
-            System.out.println("4. Close an account");
-            System.out.println("5. Exit the app");
+            System.out.println("2. Transfer a balance");
+            System.out.println("3. Switch accounts");
+            System.out.println("4. Create an account");
+            System.out.println("5. Close an account");
+            System.out.println("6. Exit the app");
         }
     }
 
@@ -62,14 +63,62 @@ public class MainMenu {
         }
         return selection;
     }
+    
+    public void printAccounts() {
+        int index = 1;
+        for (BankAccount account : accounts) {
+            System.out.println(index + ". " + account.getName());
+            index++;
+        }
+    }
+
+    public int selectAccount(String message) {
+        printAccounts();
+        while (true) {
+            System.out.print(message);
+            int accountIndex = scanInt() - 1;
+            if (accountIndex < 0 || accountIndex >= accounts.size()) {continue;}
+            return accountIndex;
+        }
+    }
 
     public void performDeposit() {
         double depositAmount = -1;
-        while(depositAmount < 0) {
+        while(depositAmount <= 0) {
             System.out.print("How much would you like to deposit: ");
             depositAmount = scanInt();
+            if (depositAmount > 0) {break;}
+            System.out.println("A deposit larger than 0 is required. Please try again.");
         }
         accounts.get(curAccountIndex).deposit(depositAmount);
+    }
+
+    public void transferUI() {
+        int fromAccountIndex;
+        while (true) {
+            fromAccountIndex = selectAccount("Select an account to transfer from: ");
+            if (accounts.get(fromAccountIndex).getBalance() > 0) {break;}
+            System.out.println("This account has no money. Please try again.");
+        }
+        int toAccountIndex = selectAccount("Select an account to transfer to: ");
+        
+        while (true) {
+            System.out.print("Enter the amount of money to be transferred: ");
+            int amount = scanInt();
+            if (transferDirect(amount, fromAccountIndex, toAccountIndex)) {break;}
+        }
+    }
+
+    public boolean transferDirect(int amount, int fromAccountIndex, int toAccountIndex) {
+        try {
+            accounts.get(fromAccountIndex).withdraw(amount);
+            accounts.get(toAccountIndex).deposit(amount);
+            return true;
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println("Amount out of bounds. Please try again.");
+            return false;
+        }
     }
 
     public void createAccount() {
@@ -81,37 +130,16 @@ public class MainMenu {
     }
 
     public void closeAccount() {
-        printAccounts();
-        while(true) {
-            System.out.print("Please select an account to close: ");
-            int accountIndex = scanInt() - 1;
-            if (accountIndex < 0 || accountIndex >= accounts.size()) {continue;}
-            accounts.remove(accountIndex);
-            if (accounts.size() != EMPTY && accountIndex == curAccountIndex) {
-                switchAccounts();
-            }
-            if (accountIndex < curAccountIndex) {curAccountIndex--;}
-            break;
+        int selectedIndex = selectAccount("Please select an account to close: ");
+        accounts.remove(selectedIndex);
+        if (accounts.size() != EMPTY && selectedIndex == curAccountIndex) {
+            switchAccounts();
         }
+        if (selectedIndex < curAccountIndex) {curAccountIndex--;}
     }
 
     public void switchAccounts() {
-        printAccounts();
-        while(true) {
-            System.out.print("Please select an account to switch to: ");
-            int accountIndex = scanInt() - 1;
-            if (accountIndex < 0 || accountIndex >= accounts.size()) {continue;}
-            curAccountIndex = accountIndex;
-            break;
-        }
-    }
-
-    public void printAccounts() {
-        int index = 1;
-        for (BankAccount account : accounts) {
-            System.out.println(index + ". " + account.getName());
-            index++;
-        }
+        curAccountIndex = selectAccount("Please select an account to switch to: ");
     }
 
     public void run() {
@@ -144,6 +172,7 @@ public class MainMenu {
     public void doAccountSelection(int selection) {
         switch (accountSelections.values()[selection]) {
             case accountSelections.DEPOSIT: performDeposit(); break;
+            case accountSelections.TRANSFER: transferUI(); break;
             case accountSelections.SWITCH: switchAccounts(); break;
             case accountSelections.CREATE: createAccount(); break;
             case accountSelections.CLOSE: closeAccount(); break;
