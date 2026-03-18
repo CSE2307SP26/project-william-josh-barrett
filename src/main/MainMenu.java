@@ -94,6 +94,15 @@ public class MainMenu {
     }
 
     public void transferUI() {
+        boolean hasMoney = false;
+        for (BankAccount account : accounts) {
+            if (account.getBalance() != EMPTY) {hasMoney = true;}
+        }
+        if (!hasMoney) {
+            System.out.println("At least one of your accounts must have funds to transfer.");
+            return;
+        }
+        
         int fromAccountIndex;
         while (true) {
             fromAccountIndex = selectAccount("Select an account to transfer from: ");
@@ -101,7 +110,6 @@ public class MainMenu {
             System.out.println("This account has no money. Please try again.");
         }
         int toAccountIndex = selectAccount("Select an account to transfer to: ");
-        
         while (true) {
             System.out.print("Enter the amount of money to be transferred: ");
             int amount = scanInt();
