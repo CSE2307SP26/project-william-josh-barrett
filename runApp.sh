@@ -6,6 +6,6 @@ cd ..
 java main.MainMenu
 rm main/BankAccount.class
 rm main/MainMenu.class
-rm main/MainMenu\$loopSelections.class
+rm main/MainMenu\$accountSelections.class
 rm main/MainMenu\$startSelections.class
 cd ..
