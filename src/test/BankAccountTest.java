@@ -3,7 +3,7 @@ package test;
 import main.BankAccount;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,12 +19,7 @@ public class BankAccountTest {
     @Test
     public void testInvalidDeposit() {
         BankAccount testAccount = new BankAccount("");
-        try {
-            testAccount.deposit(-50);
-            fail();
-        } catch (IllegalArgumentException e) {
-            //do nothing, test passes
-        }
+        assertThrows(IllegalArgumentException.class, ()->{testAccount.deposit(-50);});
     }
 
     @Test
@@ -39,24 +34,14 @@ public class BankAccountTest {
     public void testNegativeWithdraw() {
         BankAccount testAccount = new BankAccount("");
         testAccount.deposit(50);
-        try {
-            testAccount.withdraw(-50);
-            fail();
-        } catch (IllegalArgumentException e) {
-            //do nothing, test passes
-        }
+        assertThrows(IllegalArgumentException.class, ()->{testAccount.withdraw(-50);});
     }
 
     @Test
     public void testOverdraw() {
         BankAccount testAccount = new BankAccount("");
         testAccount.deposit(50);
-        try {
-            testAccount.withdraw(75);
-            fail();
-        } catch (IllegalArgumentException e) {
-            //do nothing, test passes
-        }
+        assertThrows(IllegalArgumentException.class, ()->{testAccount.withdraw(75);});
     }
 
     @Test
