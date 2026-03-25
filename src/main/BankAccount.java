@@ -3,9 +3,15 @@ package main;
 public class BankAccount {
 
     private double balance;
+    private String accountName;
 
-    public BankAccount() {
+    public BankAccount(String name) {
         this.balance = 0;
+        this.accountName = name;
+    }
+
+    public String getName() {
+        return this.accountName;
     }
 
     public void deposit(double amount) {
