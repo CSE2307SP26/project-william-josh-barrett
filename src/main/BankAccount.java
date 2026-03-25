@@ -15,7 +15,7 @@ public class BankAccount {
     }
 
     public void deposit(double amount) {
-        if(amount > 0) {
+        if (amount > 0) {
             this.balance += amount;
         } else {
             throw new IllegalArgumentException();
@@ -24,6 +24,14 @@ public class BankAccount {
 
     public void withdraw(double amount) {
         if (amount > 0 && amount <= balance) {
+            this.balance -= amount;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void collectFee(double amount) {
+        if (amount >= 0 && amount <= balance) {
             this.balance -= amount;
         } else {
             throw new IllegalArgumentException();
