@@ -30,14 +30,6 @@ public class BankAccount {
         }
     }
 
-    public void collectFee(double amount) {
-        if (amount >= 0 && amount <= balance) {
-            this.balance -= amount;
-        } else {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public double getBalance() {
         return this.balance;
     }

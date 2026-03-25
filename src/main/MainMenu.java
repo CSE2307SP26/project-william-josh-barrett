@@ -225,6 +225,12 @@ public class MainMenu {
             return;
         }
 
+        ArrayList<Integer> customerAccountIndexes = getCustomerAccountIndexes();
+        int accountIndex = selectCustomerAccount(customerAccountIndexes);
+        collectFeeFromAccount(accountIndex);
+    }
+
+    public ArrayList<Integer> getCustomerAccountIndexes() {
         ArrayList<Integer> customerAccountIndexes = new ArrayList<Integer>();
         int displayIndex = 1;
         for (int accountIndex = 0; accountIndex < accounts.size(); accountIndex++) {
@@ -235,7 +241,10 @@ public class MainMenu {
             customerAccountIndexes.add(accountIndex);
             displayIndex++;
         }
+        return customerAccountIndexes;
+    }
 
+    public int selectCustomerAccount(ArrayList<Integer> customerAccountIndexes) {
         int selectedCustomerIndex;
         while (true) {
             System.out.print("Select an account to collect a fee from: ");
@@ -244,13 +253,15 @@ public class MainMenu {
                 break;
             }
         }
-        int accountIndex = customerAccountIndexes.get(selectedCustomerIndex);
+        return customerAccountIndexes.get(selectedCustomerIndex);
+    }
 
+    public void collectFeeFromAccount(int accountIndex) {
         while (true) {
             System.out.print("Enter fee amount to collect: ");
             double amount = scanDouble();
             try {
-                accounts.get(accountIndex).collectFee(amount);
+                accounts.get(accountIndex).withdraw(amount);
                 System.out.println("Fee of $" + amount + " successfully collected.");
                 return;
             } catch (IllegalArgumentException e) {
@@ -290,68 +301,50 @@ public class MainMenu {
     }
 
     public void doAdminSelection(int selection) {
-        switch (selection) {
-            case 1:
-                performDeposit();
-                break;
-            case 2:
-                transferUI();
-                break;
-            case 3:
-                switchAccounts();
-                break;
-            case 4:
-                createAccount();
-                break;
-            case 5:
-                closeAccount();
-                break;
-            case 6:
-                collectFeeUI();
-                break;
-            case 7:
-                exit = true;
-                break;
-            default:
-                assert (false);
+        if (selection == 1) {
+            performDeposit();
+        } else if (selection == 2) {
+            transferUI();
+        } else if (selection == 3) {
+            switchAccounts();
+        } else if (selection == 4) {
+            createAccount();
+        } else if (selection == 5) {
+            closeAccount();
+        } else if (selection == 6) {
+            collectFeeUI();
+        } else if (selection == 7) {
+            exit = true;
+        } else {
+            assert (false);
         }
     }
 
     public void doStartSelection(int selection) {
-        switch (startSelections.values()[selection]) {
-            case CREATE:
-                createAccount();
-                break;
-            case EXIT:
-                exit = true;
-                break;
-            default:
-                assert (false);
+        if (selection == 1) {
+            createAccount();
+        } else if (selection == 2) {
+            exit = true;
+        } else {
+            assert (false);
         }
     }
 
     public void doAccountSelection(int selection) {
-        switch (accountSelections.values()[selection]) {
-            case DEPOSIT:
-                performDeposit();
-                break;
-            case TRANSFER:
-                transferUI();
-                break;
-            case SWITCH:
-                switchAccounts();
-                break;
-            case CREATE:
-                createAccount();
-                break;
-            case CLOSE:
-                closeAccount();
-                break;
-            case EXIT:
-                exit = true;
-                break;
-            default:
-                assert (false);
+        if (selection == 1) {
+            performDeposit();
+        } else if (selection == 2) {
+            transferUI();
+        } else if (selection == 3) {
+            switchAccounts();
+        } else if (selection == 4) {
+            createAccount();
+        } else if (selection == 5) {
+            closeAccount();
+        } else if (selection == 6) {
+            exit = true;
+        } else {
+            assert (false);
         }
     }
 
