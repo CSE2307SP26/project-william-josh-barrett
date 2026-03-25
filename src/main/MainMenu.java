@@ -69,6 +69,21 @@ public class MainMenu {
         }
     }
 
+    public double scanDouble() {
+        while (true) {
+            try {
+                double doubleValue = keyboardInput.nextDouble();
+                keyboardInput.nextLine();
+                return doubleValue;
+            } catch (InputMismatchException e) {
+                System.out.print("Invalid amount, please try again: ");
+            } catch (NoSuchElementException e) {
+                System.out.print("No input detected, please try again: ");
+            }
+            keyboardInput.nextLine();
+        }
+    }
+
     public void displayOptions() {
         System.out.println("Welcome to the 237 Bank App!");
 
@@ -233,9 +248,10 @@ public class MainMenu {
 
         while (true) {
             System.out.print("Enter fee amount to collect: ");
-            int amount = scanInt();
+            double amount = scanDouble();
             try {
                 accounts.get(accountIndex).collectFee(amount);
+                System.out.println("Fee of $" + amount + " successfully collected.");
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println("Fee amount out of bounds. Please try again.");
