@@ -92,6 +92,23 @@ public class BankAccountTest {
     }
 
     @Test
+    public void testAddInterestPayment() {
+        BankAccount testAccount = new BankAccount("interestAccount");
+        testAccount.deposit(100);
+        testAccount.addInterestPayment(12.5);
+        assertEquals(112.5, testAccount.getBalance(), 0.01);
+    }
+
+    @Test
+    public void testInvalidInterestPayment() {
+        BankAccount testAccount = new BankAccount("interestAccount");
+        testAccount.deposit(100);
+        assertThrows(IllegalArgumentException.class, () -> {
+            testAccount.addInterestPayment(0);
+        });
+    }
+
+    @Test
     public void testGetName() {
         BankAccount testAccount = new BankAccount("testName");
         assertEquals(testAccount.getName(), "testName");
