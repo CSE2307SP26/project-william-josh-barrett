@@ -16,11 +16,11 @@ public class MainMenu {
     }
 
     private static enum accountSelections {
-        MIN, DEPOSIT, TRANSFER, SWITCH, CREATE, CLOSE, EXIT, MAX
+        MIN, DEPOSIT, WITHDRAW TRANSFER, SWITCH, CREATE, CLOSE, EXIT, MAX
     }
 
     private static enum adminSelections {
-        MIN, DEPOSIT, TRANSFER, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
+        MIN, DEPOSIT, WITHDRAW, TRANSFER, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
     }
 
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
@@ -99,15 +99,16 @@ public class MainMenu {
             System.out.println("Logged in as: " + accounts.get(curAccountIndex).getName());
             System.out.println("1. Make a deposit");
             System.out.println("2. Transfer a balance");
-            System.out.println("3. Switch accounts");
-            System.out.println("4. Create an account");
-            System.out.println("5. Close an account");
+            System.out.println("3. Make a withdrawal");
+            System.out.println("4. Switch accounts");
+            System.out.println("5. Create an account");
+            System.out.println("6. Close an account");
             if (isAdminLoggedIn()) {
-                System.out.println("6. Collect a fee");
-                System.out.println("7. Add an interest payment");
-                System.out.println("8. Exit the app");
+                System.out.println("7. Collect a fee");
+                System.out.println("8. Add an interest payment");
+                System.out.println("9. Exit the app");
             } else {
-                System.out.println("6. Exit the app");
+                System.out.println("7. Exit the app");
             }
         }
     }
@@ -152,6 +153,25 @@ public class MainMenu {
             System.out.println("A deposit larger than 0 is required. Please try again.");
         }
         accounts.get(curAccountIndex).deposit(depositAmount);
+    }
+
+    public void performWithdrawal() {
+        double withdrawalAmount = -1;
+        while (withdrawalAmount <= 0) {
+            System.out.print("How much would you like to withdraw: ");
+            withdrawalAmount = scanInt();
+            if (withdrawalAmount > 0) {
+                break;
+            }
+            System.out.println("A withdrawal larger than 0 is required. Please try again.");
+        }
+        try {
+            accounts.get(curAccountIndex).withdraw(withdrawalAmount);
+            System.out.println("Successfully withdrew $" + withdrawalAmount);
+            break;
+        } catch (IllegalArgumentException e) {
+            System.out.println("Withdrawal amount exceeds account balance. Please try again.");
+        }
     }
 
     public void transferUI() {
@@ -336,16 +356,18 @@ public class MainMenu {
         } else if (selection == 2) {
             transferUI();
         } else if (selection == 3) {
+            performWithdrawal();
+        }else if (selection == 4) {
             switchAccounts();
-        } else if (selection == 4) {
-            createAccount();
         } else if (selection == 5) {
-            closeAccount();
+            createAccount();
         } else if (selection == 6) {
-            collectFeeUI();
+            closeAccount();
         } else if (selection == 7) {
-            addInterestPaymentUI();
+            collectFeeUI();
         } else if (selection == 8) {
+            addInterestPaymentUI();
+        } else if (selection == 9) {
             exit = true;
         } else {
             assert (false);
@@ -368,12 +390,14 @@ public class MainMenu {
         } else if (selection == 2) {
             transferUI();
         } else if (selection == 3) {
-            switchAccounts();
+            performWithdrawal();
         } else if (selection == 4) {
-            createAccount();
+            switchAccounts();
         } else if (selection == 5) {
-            closeAccount();
+            createAccount();
         } else if (selection == 6) {
+            closeAccount();
+        } else if (selection == 7) {
             exit = true;
         } else {
             assert (false);
