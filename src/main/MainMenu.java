@@ -8,8 +8,16 @@ import java.util.NoSuchElementException;
 public class MainMenu {
 
     private static final int EMPTY = 0;
-    private static enum startSelections {MIN, CREATE, EXIT, MAX}
-    private static enum accountSelections {MIN, DEPOSIT, TRANSFER, SWITCH, CREATE, CLOSE, EXIT, MAX}
+    private static final int LOGGED_OUT_INDEX = -1;
+    private static final String ADMIN_ACCOUNT_NAME = "admin";
+
+    private static enum startSelections {
+        MIN, CREATE, EXIT, MAX
+    }
+
+    private static enum accountSelections {
+        MIN, DEPOSIT, TRANSFER, SWITCH, CREATE, CLOSE, EXIT, MAX
+    }
 
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
     private Scanner keyboardInput;
@@ -18,6 +26,32 @@ public class MainMenu {
 
     public MainMenu() {
         this.keyboardInput = new Scanner(System.in);
+        accounts.add(new BankAccount(ADMIN_ACCOUNT_NAME));
+        curAccountIndex = LOGGED_OUT_INDEX;
+    }
+
+    public boolean isLoggedIn() {
+        return curAccountIndex != LOGGED_OUT_INDEX;
+    }
+
+    public boolean isAdminAccount(int accountIndex) {
+        return accounts.get(accountIndex).getName().equalsIgnoreCase(ADMIN_ACCOUNT_NAME);
+    }
+
+    public boolean isAdminLoggedIn() {
+        if (!isLoggedIn()) {
+            return false;
+        }
+        return isAdminAccount(curAccountIndex);
+    }
+
+    public int getAdminAccountIndex() {
+        for (int index = 0; index < accounts.size(); index++) {
+            if (isAdminAccount(index)) {
+                return index;
+            }
+        }
+        return -1;
     }
 
     public int scanInt() {
@@ -26,11 +60,9 @@ public class MainMenu {
                 int integer = keyboardInput.nextInt();
                 keyboardInput.nextLine();
                 return integer;
-            } 
-            catch (InputMismatchException e) {
+            } catch (InputMismatchException e) {
                 System.out.print("Invalid integer, please try again: ");
-            }
-            catch (NoSuchElementException e) {
+            } catch (NoSuchElementException e) {
                 System.out.print("No input detected, please try again: ");
             }
             keyboardInput.nextLine();
@@ -39,8 +71,8 @@ public class MainMenu {
 
     public void displayOptions() {
         System.out.println("Welcome to the 237 Bank App!");
-        
-        if (accounts.size() == EMPTY) {
+
+        if (!isLoggedIn()) {
             System.out.println("You are not currently logged in.");
             System.out.println("1. Create an account");
             System.out.println("2. Exit the app");
@@ -51,19 +83,24 @@ public class MainMenu {
             System.out.println("3. Switch accounts");
             System.out.println("4. Create an account");
             System.out.println("5. Close an account");
-            System.out.println("6. Exit the app");
+            if (isAdminLoggedIn()) {
+                System.out.println("6. Collect a fee");
+                System.out.println("7. Exit the app");
+            } else {
+                System.out.println("6. Exit the app");
+            }
         }
     }
 
     public int getUserSelection(int max) {
         int selection = -1;
-        while(selection < 1 || selection >= max) {
+        while (selection < 1 || selection >= max) {
             System.out.print("Please make a selection: ");
             selection = scanInt();
         }
         return selection;
     }
-    
+
     public void printAccounts() {
         int index = 1;
         for (BankAccount account : accounts) {
@@ -77,17 +114,21 @@ public class MainMenu {
         while (true) {
             System.out.print(message);
             int accountIndex = scanInt() - 1;
-            if (accountIndex < 0 || accountIndex >= accounts.size()) {continue;}
+            if (accountIndex < 0 || accountIndex >= accounts.size()) {
+                continue;
+            }
             return accountIndex;
         }
     }
 
     public void performDeposit() {
         double depositAmount = -1;
-        while(depositAmount <= 0) {
+        while (depositAmount <= 0) {
             System.out.print("How much would you like to deposit: ");
             depositAmount = scanInt();
-            if (depositAmount > 0) {break;}
+            if (depositAmount > 0) {
+                break;
+            }
             System.out.println("A deposit larger than 0 is required. Please try again.");
         }
         accounts.get(curAccountIndex).deposit(depositAmount);
@@ -96,24 +137,30 @@ public class MainMenu {
     public void transferUI() {
         boolean hasMoney = false;
         for (BankAccount account : accounts) {
-            if (account.getBalance() != EMPTY) {hasMoney = true;}
+            if (account.getBalance() != EMPTY) {
+                hasMoney = true;
+            }
         }
         if (!hasMoney) {
             System.out.println("At least one of your accounts must have funds to transfer.");
             return;
         }
-        
+
         int fromAccountIndex;
         while (true) {
             fromAccountIndex = selectAccount("Select an account to transfer from: ");
-            if (accounts.get(fromAccountIndex).getBalance() > 0) {break;}
+            if (accounts.get(fromAccountIndex).getBalance() > 0) {
+                break;
+            }
             System.out.println("This account has no money. Please try again.");
         }
         int toAccountIndex = selectAccount("Select an account to transfer to: ");
         while (true) {
             System.out.print("Enter the amount of money to be transferred: ");
             int amount = scanInt();
-            if (transferDirect(amount, fromAccountIndex, toAccountIndex)) {break;}
+            if (transferDirect(amount, fromAccountIndex, toAccountIndex)) {
+                break;
+            }
         }
     }
 
@@ -122,8 +169,7 @@ public class MainMenu {
             accounts.get(fromAccountIndex).withdraw(amount);
             accounts.get(toAccountIndex).deposit(amount);
             return true;
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("Amount out of bounds. Please try again.");
             return false;
         }
@@ -132,6 +178,12 @@ public class MainMenu {
     public void createAccount() {
         System.out.print("Please enter the account name: ");
         String name = keyboardInput.nextLine();
+        if (name.equalsIgnoreCase(ADMIN_ACCOUNT_NAME)) {
+            int adminIndex = getAdminAccountIndex();
+            curAccountIndex = adminIndex;
+            System.out.println("Logged in as admin.");
+            return;
+        }
         BankAccount new_account = new BankAccount(name);
         accounts.add(new_account);
         curAccountIndex = accounts.size() - 1;
@@ -139,11 +191,56 @@ public class MainMenu {
 
     public void closeAccount() {
         int selectedIndex = selectAccount("Please select an account to close: ");
+        if (isAdminAccount(selectedIndex)) {
+            System.out.println("The admin account cannot be closed.");
+            return;
+        }
         accounts.remove(selectedIndex);
         if (accounts.size() != EMPTY && selectedIndex == curAccountIndex) {
             switchAccounts();
         }
-        if (selectedIndex < curAccountIndex) {curAccountIndex--;}
+        if (selectedIndex < curAccountIndex) {
+            curAccountIndex--;
+        }
+    }
+
+    public void collectFeeUI() {
+        if (accounts.size() <= 1) {
+            System.out.println("No customer accounts available for fee collection.");
+            return;
+        }
+
+        ArrayList<Integer> customerAccountIndexes = new ArrayList<Integer>();
+        int displayIndex = 1;
+        for (int accountIndex = 0; accountIndex < accounts.size(); accountIndex++) {
+            if (isAdminAccount(accountIndex)) {
+                continue;
+            }
+            System.out.println(displayIndex + ". " + accounts.get(accountIndex).getName());
+            customerAccountIndexes.add(accountIndex);
+            displayIndex++;
+        }
+
+        int selectedCustomerIndex;
+        while (true) {
+            System.out.print("Select an account to collect a fee from: ");
+            selectedCustomerIndex = scanInt() - 1;
+            if (selectedCustomerIndex >= 0 && selectedCustomerIndex < customerAccountIndexes.size()) {
+                break;
+            }
+        }
+        int accountIndex = customerAccountIndexes.get(selectedCustomerIndex);
+
+        while (true) {
+            System.out.print("Enter fee amount to collect: ");
+            int amount = scanInt();
+            try {
+                accounts.get(accountIndex).collectFee(amount);
+                return;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Fee amount out of bounds. Please try again.");
+            }
+        }
     }
 
     public void switchAccounts() {
@@ -153,39 +250,92 @@ public class MainMenu {
     public void run() {
         while (true) {
             doSelectedAction();
-            if (exit) {return;}
+            if (exit) {
+                return;
+            }
         }
     }
 
     public void doSelectedAction() {
         int selection = -1;
         displayOptions();
-        if (accounts.size() == EMPTY) {
+        if (!isLoggedIn()) {
             selection = getUserSelection(startSelections.MAX.ordinal());
             doStartSelection(selection);
         } else {
-            selection = getUserSelection(accountSelections.MAX.ordinal());
-            doAccountSelection(selection);
+            if (isAdminLoggedIn()) {
+                selection = getUserSelection(8);
+                doAdminSelection(selection);
+            } else {
+                selection = getUserSelection(accountSelections.MAX.ordinal());
+                doAccountSelection(selection);
+            }
+        }
+    }
+
+    public void doAdminSelection(int selection) {
+        switch (selection) {
+            case 1:
+                performDeposit();
+                break;
+            case 2:
+                transferUI();
+                break;
+            case 3:
+                switchAccounts();
+                break;
+            case 4:
+                createAccount();
+                break;
+            case 5:
+                closeAccount();
+                break;
+            case 6:
+                collectFeeUI();
+                break;
+            case 7:
+                exit = true;
+                break;
+            default:
+                assert (false);
         }
     }
 
     public void doStartSelection(int selection) {
         switch (startSelections.values()[selection]) {
-            case startSelections.CREATE: createAccount(); break;
-            case startSelections.EXIT: exit = true; break;
-            default: assert(false);
+            case CREATE:
+                createAccount();
+                break;
+            case EXIT:
+                exit = true;
+                break;
+            default:
+                assert (false);
         }
     }
 
     public void doAccountSelection(int selection) {
         switch (accountSelections.values()[selection]) {
-            case accountSelections.DEPOSIT: performDeposit(); break;
-            case accountSelections.TRANSFER: transferUI(); break;
-            case accountSelections.SWITCH: switchAccounts(); break;
-            case accountSelections.CREATE: createAccount(); break;
-            case accountSelections.CLOSE: closeAccount(); break;
-            case accountSelections.EXIT: exit = true; break;
-            default: assert(false);
+            case DEPOSIT:
+                performDeposit();
+                break;
+            case TRANSFER:
+                transferUI();
+                break;
+            case SWITCH:
+                switchAccounts();
+                break;
+            case CREATE:
+                createAccount();
+                break;
+            case CLOSE:
+                closeAccount();
+                break;
+            case EXIT:
+                exit = true;
+                break;
+            default:
+                assert (false);
         }
     }
 
