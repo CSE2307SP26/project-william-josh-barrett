@@ -19,6 +19,10 @@ public class MainMenu {
         MIN, DEPOSIT, TRANSFER, SWITCH, CREATE, CLOSE, EXIT, MAX
     }
 
+    private static enum adminSelections {
+        MIN, DEPOSIT, TRANSFER, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
+    }
+
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
     private Scanner keyboardInput;
     private boolean exit = false;
@@ -100,7 +104,8 @@ public class MainMenu {
             System.out.println("5. Close an account");
             if (isAdminLoggedIn()) {
                 System.out.println("6. Collect a fee");
-                System.out.println("7. Exit the app");
+                System.out.println("7. Add an interest payment");
+                System.out.println("8. Exit the app");
             } else {
                 System.out.println("6. Exit the app");
             }
@@ -270,6 +275,31 @@ public class MainMenu {
         }
     }
 
+    public void addInterestPaymentUI() {
+        if (accounts.size() <= 1) {
+            System.out.println("No customer accounts available for interest payments.");
+            return;
+        }
+
+        ArrayList<Integer> customerAccountIndexes = getCustomerAccountIndexes();
+        int accountIndex = selectCustomerAccount(customerAccountIndexes);
+        addInterestPaymentToAccount(accountIndex);
+    }
+
+    public void addInterestPaymentToAccount(int accountIndex) {
+        while (true) {
+            System.out.print("Enter interest payment amount: ");
+            double amount = scanDouble();
+            try {
+                accounts.get(accountIndex).addInterestPayment(amount);
+                System.out.println("Interest payment of $" + amount + " successfully added.");
+                return;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Interest payment amount out of bounds. Please try again.");
+            }
+        }
+    }
+
     public void switchAccounts() {
         curAccountIndex = selectAccount("Please select an account to switch to: ");
     }
@@ -291,7 +321,7 @@ public class MainMenu {
             doStartSelection(selection);
         } else {
             if (isAdminLoggedIn()) {
-                selection = getUserSelection(8);
+                selection = getUserSelection(adminSelections.MAX.ordinal());
                 doAdminSelection(selection);
             } else {
                 selection = getUserSelection(accountSelections.MAX.ordinal());
@@ -314,6 +344,8 @@ public class MainMenu {
         } else if (selection == 6) {
             collectFeeUI();
         } else if (selection == 7) {
+            addInterestPaymentUI();
+        } else if (selection == 8) {
             exit = true;
         } else {
             assert (false);
