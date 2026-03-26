@@ -19,6 +19,10 @@
 8. A bank adminstrator should be able to collect fees from existing accounts when necessary.
 9. A bank adminstrator should be able to add an interest payment to an existing account when necessary.
 
+    
+## What user stories were completeted in this iteration?
+  User Stories 2, 3, 5, 6, 7, 8, and 9 were completed in this iteration. 
+  
 ## What user stories do you intend to complete next iteration?
   We intend to complete User Story #4 next iteration, that a bank customer should be able to view their
   transaction history for an account. We intend to do this by creating an ArrayList holding strings and 
