@@ -16,11 +16,11 @@ public class MainMenu {
     }
 
     private static enum accountSelections {
-        MIN, DEPOSIT, TRANSFER, WITHDRAW, SWITCH, CREATE, CLOSE, EXIT, MAX
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, SWITCH, CREATE, CLOSE, EXIT, MAX
     }
 
     private static enum adminSelections {
-        MIN, DEPOSIT, TRANSFER, WITHDRAW, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
     }
 
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
@@ -100,15 +100,16 @@ public class MainMenu {
             System.out.println("1. Make a deposit");
             System.out.println("2. Transfer a balance");
             System.out.println("3. Make a withdrawal");
-            System.out.println("4. Switch accounts");
-            System.out.println("5. Create an account");
-            System.out.println("6. Close an account");
+            System.out.println("4. Check account balance");
+            System.out.println("5. Switch accounts");
+            System.out.println("6. Create an account");
+            System.out.println("7. Close an account");
             if (isAdminLoggedIn()) {
-                System.out.println("7. Collect a fee");
-                System.out.println("8. Add an interest payment");
-                System.out.println("9. Exit the app");
+                System.out.println("8. Collect a fee");
+                System.out.println("9. Add an interest payment");
+                System.out.println("10. Exit the app");
             } else {
-                System.out.println("7. Exit the app");
+                System.out.println("8. Exit the app");
             }
         }
     }
@@ -173,6 +174,10 @@ public class MainMenu {
         }
     }
 
+    public void checkBalance(){
+        double balance = accounts.get(curAccountIndex).getBalance();
+        System.out.println("Current balance: $" + balance);
+    }
     public void transferUI() {
         boolean hasMoney = false;
         for (BankAccount account : accounts) {
@@ -356,17 +361,19 @@ public class MainMenu {
             transferUI();
         } else if (selection == 3) {
             performWithdrawal();
-        }else if (selection == 4) {
+        } else if (selection == 4){
+            checkBalance();
+        }else if (selection == 5) {
             switchAccounts();
-        } else if (selection == 5) {
-            createAccount();
         } else if (selection == 6) {
-            closeAccount();
+            createAccount();
         } else if (selection == 7) {
-            collectFeeUI();
+            closeAccount();
         } else if (selection == 8) {
-            addInterestPaymentUI();
+            collectFeeUI();
         } else if (selection == 9) {
+            addInterestPaymentUI();
+        } else if (selection == 10) {
             exit = true;
         } else {
             assert (false);
@@ -391,12 +398,14 @@ public class MainMenu {
         } else if (selection == 3) {
             performWithdrawal();
         } else if (selection == 4) {
+            checkBalance();
+        }else if (selection == 5) {
             switchAccounts();
-        } else if (selection == 5) {
-            createAccount();
         } else if (selection == 6) {
-            closeAccount();
+            createAccount();
         } else if (selection == 7) {
+            closeAccount();
+        } else if (selection == 8) {
             exit = true;
         } else {
             assert (false);
