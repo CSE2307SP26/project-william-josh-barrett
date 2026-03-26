@@ -16,7 +16,7 @@ public class MainMenu {
     }
 
     private static enum accountSelections {
-        MIN, DEPOSIT, WITHDRAW TRANSFER, SWITCH, CREATE, CLOSE, EXIT, MAX
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, SWITCH, CREATE, CLOSE, EXIT, MAX
     }
 
     private static enum adminSelections {
