@@ -82,6 +82,15 @@ public class BankAccountTest {
     }
 
     @Test
+    public void testMultipleWithdrawals() {
+        BankAccount testAccount = new BankAccount("multipleWithdrawals");
+        testAccount.deposit(100);
+        testAccount.withdraw(25);
+        testAccount.withdraw(25);
+        assertEquals(50, testAccount.getBalance(), 0.01);
+    }
+
+    @Test
     public void testBalanceUnchangedAfterInvalidWithdraw() {
         BankAccount testAccount = new BankAccount("unchangedBalance");
         testAccount.deposit(50);
