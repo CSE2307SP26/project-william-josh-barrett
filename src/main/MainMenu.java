@@ -168,7 +168,6 @@ public class MainMenu {
         try {
             accounts.get(curAccountIndex).withdraw(withdrawalAmount);
             System.out.println("Successfully withdrew $" + withdrawalAmount);
-            break;
         } catch (IllegalArgumentException e) {
             System.out.println("Withdrawal amount exceeds account balance. Please try again.");
         }
