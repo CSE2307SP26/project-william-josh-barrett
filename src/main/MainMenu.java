@@ -20,7 +20,7 @@ public class MainMenu {
     }
 
     private static enum adminSelections {
-        MIN, DEPOSIT, WITHDRAW, TRANSFER, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
     }
 
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
