@@ -111,8 +111,8 @@ public class BankManager {
     }
 
     public boolean closeAccount(int index) {
-        accounts.remove(index);
         int curAccountIndex = accounts.indexOf(curAccount);
+        accounts.remove(index);
         if (accounts.size() != EMPTY && index == curAccountIndex) {
             return false;
         }

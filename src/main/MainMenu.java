@@ -7,6 +7,8 @@ import java.util.NoSuchElementException;
 
 public class MainMenu {
 
+    private static final int EMPTY = 0;
+
     private static enum startSelections {
         MIN, CREATE, EXIT, MAX
     }
@@ -187,25 +189,44 @@ public class MainMenu {
     }
 
     public void collectFeeUI() {
-        if (bank.getSize() <= 1) {
-            System.out.println("No customer accounts available for fee collection.");
+        BankAccount validAccount = getCollectableCustomerAccount();
+        if (validAccount == null) {
             return;
         }
-
-        ArrayList<BankAccount> customerAccountIndexes = bank.getCustomerAccounts();
-        BankAccount selectedAccount = selectCustomerAccount(customerAccountIndexes);
-        
         while (true) {
             System.out.print("Enter fee amount to collect: ");
             double amount = scanDouble();
             try {
-                selectedAccount.withdraw(amount);
+                validAccount.withdraw(amount);
                 System.out.println("Fee of $" + amount + " successfully collected.");
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println("Fee amount out of bounds. Please try again.");
             }
         }
+    }
+
+    public BankAccount getCollectableCustomerAccount() {
+        if (bank.getSize() <= 1) {
+            System.out.println("No customer accounts available for fee collection.");
+            return null;
+        }
+        if (bank.checkBankIsEmpty()) {
+            System.out.println("No customer accounts have collectable funds.");
+            return null;
+        }
+        ArrayList<BankAccount> customerAccounts;
+        BankAccount selectedAccount;
+        while (true) {
+            customerAccounts = bank.getCustomerAccounts();
+            selectedAccount = selectCustomerAccount(customerAccounts);
+            if (selectedAccount.getBalance() == EMPTY) {
+                System.out.println("This account has no funds. Please try again.");
+                continue;
+            }
+            break;
+        }
+        return selectedAccount;
     }
 
     public BankAccount selectCustomerAccount(ArrayList<BankAccount> customerAccounts) {
@@ -215,7 +236,7 @@ public class MainMenu {
             displayIndex++;
         }
         while (true) {
-            System.out.print("Select an account to collect a fee from: ");
+            System.out.print("Select an account: ");
             int selectedCustomerIndex = scanInt() - 1;
             if (selectedCustomerIndex >= 0 && selectedCustomerIndex < customerAccounts.size()) {
                 return customerAccounts.get(selectedCustomerIndex);
