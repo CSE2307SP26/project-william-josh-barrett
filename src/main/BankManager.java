@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class BankManager {
 
     private static final int EMPTY = 0;
+    private static final int ADMIN_ACCOUNT_INDEX = 0;
     private static final String ADMIN_ACCOUNT_NAME = "admin";
 
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
@@ -53,7 +54,7 @@ public class BankManager {
     }
 
     public boolean isAdminAccount(int index) {
-        return accounts.get(index).getName().equalsIgnoreCase(ADMIN_ACCOUNT_NAME);
+        return index == ADMIN_ACCOUNT_INDEX;
     }
 
     public boolean isAdminAccount(BankAccount account) {
@@ -98,13 +99,15 @@ public class BankManager {
         }
     }
 
-    public void createAccount(String name) {
+    public BankAccount createAccount(String name) {
         if (name.equalsIgnoreCase(ADMIN_ACCOUNT_NAME)) {
             curAccount = getAdminAccount();
+            return curAccount;
         }
         BankAccount new_account = new BankAccount(name);
         accounts.add(new_account);
         curAccount = accounts.get(accounts.size() - 1);
+        return curAccount;
     }
 
     public boolean closeAccount(int index) {
