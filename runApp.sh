@@ -1,11 +1,13 @@
 #!/bin/bash
 
 cd src/main
-javac MainMenu.java BankAccount.java
+javac MainMenu.java BankAccount.java BankManager.java
 cd ..
 java main.MainMenu
-rm main/BankAccount.class
 rm main/MainMenu.class
+rm main/BankAccount.class
+rm main/BankManager.class
 rm main/MainMenu\$accountSelections.class
+rm main/MainMenu\$adminSelections.class
 rm main/MainMenu\$startSelections.class
 cd ..
