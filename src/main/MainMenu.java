@@ -178,6 +178,7 @@ public class MainMenu {
         double balance = accounts.get(curAccountIndex).getBalance();
         System.out.println("Current balance: $" + balance);
     }
+
     public void transferUI() {
         boolean hasMoney = false;
         for (BankAccount account : accounts) {
@@ -202,16 +203,16 @@ public class MainMenu {
         while (true) {
             System.out.print("Enter the amount of money to be transferred: ");
             int amount = scanInt();
-            if (transferDirect(amount, fromAccountIndex, toAccountIndex)) {
+            if (transferDirect(amount, accounts.get(fromAccountIndex), accounts.get(toAccountIndex))) {
                 break;
             }
         }
     }
 
-    public boolean transferDirect(int amount, int fromAccountIndex, int toAccountIndex) {
+    public boolean transferDirect(int amount, BankAccount fromAccount, BankAccount toAccount) {
         try {
-            accounts.get(fromAccountIndex).withdraw(amount);
-            accounts.get(toAccountIndex).deposit(amount);
+            fromAccount.withdraw(amount);
+            toAccount.deposit(amount);
             return true;
         } catch (IllegalArgumentException e) {
             System.out.println("Amount out of bounds. Please try again.");
