@@ -40,8 +40,8 @@ public class BankManager {
         return curAccount.getTransactionHistory();
     }
 
-    public BankAccount getCurrentAccount() {
-        return curAccount;
+    public void addTransaction(String message) {
+        curAccount.addTransaction(message);
     }
 
     public boolean checkBankIsEmpty() {
