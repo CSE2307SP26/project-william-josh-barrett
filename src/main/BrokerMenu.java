@@ -130,7 +130,7 @@ public class BrokerMenu {
             curPortfolio.add(new Security(securityName, amount, value));
             bank.addTransaction(
                 "Bought " + amount + " of " + securityName +
-                " for $" + String.format("%.2f", buyValue)
+                " for $" + buyValue
     );
             System.out.println("Purchase successful.");
             return;
