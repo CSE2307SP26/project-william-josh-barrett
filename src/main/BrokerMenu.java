@@ -105,6 +105,10 @@ public class BrokerMenu {
         if (buyValue <= bank.getBalance()) {
             bank.withdraw(buyValue);
             security.setAmount(amount + security.getAmount());
+            bank.addTransaction(
+                "Bought " + amount + " of " + security.getName() +
+                " for $" + buyValue
+    );
             System.out.println("Purchase successful.");
             return;
         }
@@ -124,6 +128,10 @@ public class BrokerMenu {
         if (buyValue <= bank.getBalance()) {
             bank.withdraw(buyValue);
             curPortfolio.add(new Security(securityName, amount, value));
+            bank.addTransaction(
+                "Bought " + amount + " of " + securityName +
+                " for $" + buyValue
+    );
             System.out.println("Purchase successful.");
             return;
         }
@@ -176,6 +184,9 @@ public class BrokerMenu {
         double sellValueRaw = sellAmount * selection.getValue();
         double sellValueRounded = Math.round(sellValueRaw*100.0)/100.0;
         bank.deposit(sellValueRounded);
+        bank.addTransaction(
+            "Sold " + sellAmount + " of " + selection.getName() +
+            " for $" + sellValueRounded);
         System.out.println("Sale successful. Value of sale: $" + sellValueRounded);
     }
 
