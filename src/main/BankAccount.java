@@ -1,17 +1,25 @@
 package main;
 
+import java.util.ArrayList;
+
 public class BankAccount {
 
     private double balance;
     private String accountName;
+    private ArrayList<Security> portfolio;
 
     public BankAccount(String name) {
         this.balance = 0;
         this.accountName = name;
+        this.portfolio = new ArrayList<Security>();
     }
 
     public String getName() {
         return this.accountName;
+    }
+
+    public ArrayList<Security> getPortfolio() {
+        return portfolio;
     }
 
     public void deposit(double amount) {

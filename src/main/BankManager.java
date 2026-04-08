@@ -28,6 +28,10 @@ public class BankManager {
         return accounts.size();
     }
 
+    public ArrayList<Security> getPortfolio() {
+        return curAccount.getPortfolio();
+    }
+
     public double getAccountBalance(int index) {
         return accounts.get(index).getBalance();
     }

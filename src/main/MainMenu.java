@@ -14,19 +14,21 @@ public class MainMenu {
     }
 
     private static enum accountSelections {
-        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, SWITCH, CREATE, CLOSE, EXIT, MAX
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, BROKERAGE, SWITCH, CREATE, CLOSE, EXIT, MAX
     }
 
     private static enum adminSelections {
-        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, BROKERAGE, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
     }
 
     private BankManager bank = new BankManager();
+    private BrokerMenu broker;
     private Scanner keyboardInput;
     private boolean exit = false;
 
     public MainMenu() {
         this.keyboardInput = new Scanner(System.in);
+        broker = new BrokerMenu(this, bank);
     }
 
     public int scanInt() {
@@ -72,15 +74,16 @@ public class MainMenu {
             System.out.println("2. Transfer a balance");
             System.out.println("3. Make a withdrawal");
             System.out.println("4. Check account balance");
-            System.out.println("5. Switch accounts");
-            System.out.println("6. Create an account");
-            System.out.println("7. Close an account");
+            System.out.println("5. Open securities brokerage");
+            System.out.println("6. Switch accounts");
+            System.out.println("7. Create an account");
+            System.out.println("8. Close an account");
             if (bank.isAdminLoggedIn()) {
-                System.out.println("8. Collect a fee");
-                System.out.println("9. Add an interest payment");
-                System.out.println("10. Exit the app");
+                System.out.println("9. Collect a fee");
+                System.out.println("10. Add an interest payment");
+                System.out.println("11. Exit the app");
             } else {
-                System.out.println("8. Exit the app");
+                System.out.println("9. Exit the app");
             }
         }
     }
@@ -305,17 +308,19 @@ public class MainMenu {
             withdrawalUI();
         } else if (selection == 4){
             getBalanceUI();
-        }else if (selection == 5) {
-            switchAccountsUI();
+        } else if (selection == 5){
+            broker.open();
         } else if (selection == 6) {
-            createAccountUI();
+            switchAccountsUI();
         } else if (selection == 7) {
-            closeAccountUI();
+            createAccountUI();
         } else if (selection == 8) {
-            collectFeeUI();
+            closeAccountUI();
         } else if (selection == 9) {
-            addInterestPaymentUI();
+            collectFeeUI();
         } else if (selection == 10) {
+            addInterestPaymentUI();
+        } else if (selection == 11) {
             exit = true;
         } else {
             assert (false);
@@ -341,13 +346,15 @@ public class MainMenu {
             withdrawalUI();
         } else if (selection == 4) {
             getBalanceUI();
-        }else if (selection == 5) {
-            switchAccountsUI();
+        } else if (selection == 5){
+            broker.open();
         } else if (selection == 6) {
-            createAccountUI();
+            switchAccountsUI();
         } else if (selection == 7) {
-            closeAccountUI();
+            createAccountUI();
         } else if (selection == 8) {
+            closeAccountUI();
+        } else if (selection == 9) {
             exit = true;
         } else {
             assert (false);
