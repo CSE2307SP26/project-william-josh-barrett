@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import main.BankAccount;
 import main.BankManager;
+import main.Security;
 
 public class BankManagerTest {
     
@@ -37,6 +38,18 @@ public class BankManagerTest {
         assertEquals(bank.getSize(), 2);
         bank.createAccount("test_2");
         assertEquals(bank.getSize(), 3);
+    }
+
+    @Test
+    public void testGetPortfolio() {
+        BankManager bank = new BankManager();
+        bank.createAccount("test_1");
+        bank.switchAccounts(1);
+        ArrayList<Security> portfolio = bank.getPortfolio();
+        assert(portfolio.isEmpty());
+        portfolio.add(new Security("testSecurity", 0, 0));
+        ArrayList<Security> portfolio_refresh = bank.getPortfolio();
+        assertEquals(portfolio_refresh.getFirst().getName(), "testSecurity");
     }
 
     @Test
