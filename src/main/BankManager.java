@@ -36,6 +36,14 @@ public class BankManager {
         return accounts.get(index).getBalance();
     }
 
+    public ArrayList<String> getTransactionHistory() {
+        return curAccount.getTransactionHistory();
+    }
+
+    public BankAccount getCurrentAccount() {
+        return curAccount;
+    }
+
     public boolean checkBankIsEmpty() {
         for (BankAccount account : accounts) {
             if (account.getBalance() != EMPTY) {
