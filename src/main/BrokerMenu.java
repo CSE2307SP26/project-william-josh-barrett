@@ -105,7 +105,7 @@ public class BrokerMenu {
         if (buyValue <= bank.getBalance()) {
             bank.withdraw(buyValue);
             security.setAmount(amount + security.getAmount());
-            bank.getCurrentAccount().addTransaction(
+            bank.addTransaction(
                 "Bought " + amount + " of " + security.getName() +
                 " for $" + String.format("%.2f", buyValue)
     );
