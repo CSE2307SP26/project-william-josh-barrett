@@ -186,7 +186,7 @@ public class BrokerMenu {
         bank.deposit(sellValueRounded);
         bank.addTransaction(
             "Sold " + sellAmount + " of " + selection.getName() +
-            " for $" + String.format("%.2f", sellValueRounded));
+            " for $" + sellValueRounded);
         System.out.println("Sale successful. Value of sale: $" + sellValueRounded);
     }
 
