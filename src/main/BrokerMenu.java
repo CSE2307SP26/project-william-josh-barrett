@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class BrokerMenu {
 
-    private static final int BROKER_OPTIONS_MAX = 4;
+    private static final int BROKER_OPTIONS_MAX = 5;
 
     private ArrayList<Security> curPortfolio;
     private Scanner keyboardInput;
@@ -28,11 +28,16 @@ public class BrokerMenu {
 
     public Security getSecurity(String name) {
         for (Security security : curPortfolio) {
-            if (security.getName() == name) {
+            if (name.equals(security.getName())) {
                 return security;
             }
         }
         return null;
+    }
+
+    public boolean checkSecurityOwnership(String name) {
+        Security security = getSecurity(name);
+        return security != null;
     }
 
     public void open() {
@@ -51,27 +56,31 @@ public class BrokerMenu {
     public void displayMenu() {
         System.out.println("Welcome to the 237 Bank Brokerage!");
         System.out.println("Logged in as: " + bank.getCurAccountName());
-        System.out.println("1. Purchase a security");
-        System.out.println("2. View your portfolio");
-        System.out.println("3. Exit the brokerage");
+        System.out.println("1. Buy a security");
+        System.out.println("2. Sell a security");
+        System.out.println("3. View your portfolio");
+        System.out.println("4. Exit the brokerage");
     }
 
     public void doSelectedAction(int selection) {
         switch (selection) {
             case 1: 
-                buySecurity();
+                attemptBuySecurity();
                 break;
-            case 2: 
-                displayPortfolio();
+            case 2:
+                attemptSellSecurity();
                 break;
             case 3: 
+                displayPortfolio();
+                break;
+            case 4: 
                 exit = true;
                 break;
             default: assert(false);
         }
     }
 
-    public void buySecurity() {
+    public void attemptBuySecurity() {
         System.out.print("Please enter the name of the security you want to purchase: ");
         String secName = keyboardInput.nextLine();
         if (checkSecurityOwnership(secName)) {
@@ -79,15 +88,6 @@ public class BrokerMenu {
             return;
         }
         buyNewSecurity(secName);
-    }
-
-    public boolean checkSecurityOwnership(String securityName) {
-        for (Security security : curPortfolio) {
-            if (securityName == security.getName()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void buyMoreSecurity(String securityName) {
@@ -101,8 +101,9 @@ public class BrokerMenu {
             System.out.println("Purchase cancelled.");
             return;
         }
-        if (amount * secValue <= bank.getBalance()) {
-            bank.withdraw(amount * secValue);
+        double buyValue = Math.round((amount * secValue)*100.0)/100.0;
+        if (buyValue <= bank.getBalance()) {
+            bank.withdraw(buyValue);
             security.setAmount(amount + security.getAmount());
             System.out.println("Purchase successful.");
             return;
@@ -111,7 +112,7 @@ public class BrokerMenu {
     }
 
     public void buyNewSecurity(String securityName) {
-        double value = Math.round((1 + 99*rng.nextDouble())*100)/100;
+        double value = Math.round((1.0 + 99.0*rng.nextDouble())*100.0)/100.0;
         System.out.println("The current value of " + securityName + " is $" + value);
         System.out.print("Enter the amount you would like to purchase: ");
         int amount = menu.scanInt();
@@ -119,8 +120,9 @@ public class BrokerMenu {
             System.out.println("Purchase cancelled.");
             return;
         }
-        if (amount * value <= bank.getBalance()) {
-            bank.withdraw(amount * value);
+        double buyValue = Math.round((amount * value)*100.0)/100.0;
+        if (buyValue <= bank.getBalance()) {
+            bank.withdraw(buyValue);
             curPortfolio.add(new Security(securityName, amount, value));
             System.out.println("Purchase successful.");
             return;
@@ -128,15 +130,68 @@ public class BrokerMenu {
         System.out.println("Insufficient funds to complete purchase.");
     }
 
-    public void displayPortfolio() {
+    public void attemptSellSecurity() {
+        Security selection = selectPortfolioSecurity();
+        if (selection == null) {
+            return;
+        }
+        
+        int sellAmount = getSellAmount(selection);
+        if (sellAmount == -1) {
+            return;
+        }
+
+        sellSecurity(selection, sellAmount);
+    }
+
+    public Security selectPortfolioSecurity() {
+        if (!displayPortfolio()) {
+            return null;
+        }
+        int selectionIndex = menu.getUserSelection(curPortfolio.size() + 1) - 1;
+        Security selection = curPortfolio.get(selectionIndex);
+        System.out.println("You have selected " + selection.getName());
+        return selection;
+    }
+
+    public int getSellAmount(Security selection) {
+        System.out.print("Please enter the number of securities you would like to sell: ");
+        int sellAmount = menu.scanInt();
+        if (sellAmount <= 0) {
+            System.out.println("Sale Cancelled");
+            return -1;
+        }
+        if (sellAmount > selection.getAmount()) {
+            System.out.println("Number too large!");
+            return -1;
+        }
+        return sellAmount;
+    }
+
+    public void sellSecurity(Security selection, int sellAmount) {
+        selection.setAmount(selection.getAmount() - sellAmount);
+        if (selection.getAmount() == 0) {
+            curPortfolio.remove(selection);
+        }
+        double sellValueRaw = sellAmount * selection.getValue();
+        double sellValueRounded = Math.round(sellValueRaw*100.0)/100.0;
+        bank.deposit(sellValueRounded);
+        System.out.println("Sale successful. Value of sale: $" + sellValueRounded);
+    }
+
+    public boolean displayPortfolio() {
         if (curPortfolio.isEmpty()) {
             System.out.println("Your portfolio is empty.");
+            return false;
         }
+        System.out.println("Your portfolio:");
         int index = 1;
         for (Security security : curPortfolio) {
             System.out.println(index + ". " + security.getName());
             System.out.println("    Amount: " + security.getAmount());
             System.out.println("    Value: $" + security.getValue());
+            index++;
         }
+        return true;
     }
 }
