@@ -101,8 +101,9 @@ public class BrokerMenu {
             System.out.println("Purchase cancelled.");
             return;
         }
-        if (amount * secValue <= bank.getBalance()) {
-            bank.withdraw(amount * secValue);
+        double buyValue = Math.round((amount * secValue)*100.0)/100.0;
+        if (buyValue <= bank.getBalance()) {
+            bank.withdraw(buyValue);
             security.setAmount(amount + security.getAmount());
             System.out.println("Purchase successful.");
             return;
@@ -119,8 +120,9 @@ public class BrokerMenu {
             System.out.println("Purchase cancelled.");
             return;
         }
-        if (amount * value <= bank.getBalance()) {
-            bank.withdraw(amount * value);
+        double buyValue = Math.round((amount * value)*100.0)/100.0;
+        if (buyValue <= bank.getBalance()) {
+            bank.withdraw(buyValue);
             curPortfolio.add(new Security(securityName, amount, value));
             System.out.println("Purchase successful.");
             return;

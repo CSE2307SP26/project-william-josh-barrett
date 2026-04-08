@@ -25,6 +25,7 @@ public class BankAccount {
     public void deposit(double amount) {
         if (amount > 0) {
             this.balance += amount;
+            this.balance = Math.round(balance*100.0)/100.0;
         } else {
             throw new IllegalArgumentException();
         }
@@ -33,17 +34,14 @@ public class BankAccount {
     public void withdraw(double amount) {
         if (amount > 0 && amount <= balance) {
             this.balance -= amount;
+            this.balance = Math.round(balance*100.0)/100.0;
         } else {
             throw new IllegalArgumentException();
         }
     }
 
     public void addInterestPayment(double amount) {
-        if (amount > 0) {
-            this.balance += amount;
-        } else {
-            throw new IllegalArgumentException();
-        }
+        deposit(amount);
     }
 
     public double getBalance() {
