@@ -107,7 +107,7 @@ public class BrokerMenu {
             security.setAmount(amount + security.getAmount());
             bank.addTransaction(
                 "Bought " + amount + " of " + security.getName() +
-                " for $" + String.format("%.2f", buyValue)
+                " for $" + buyValue
     );
             System.out.println("Purchase successful.");
             return;
