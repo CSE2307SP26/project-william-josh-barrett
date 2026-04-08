@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import main.BankAccount;
 import main.BankManager;
 import main.BrokerMenu;
 import main.MainMenu;

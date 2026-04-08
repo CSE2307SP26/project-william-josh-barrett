@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class BrokerMenu {
 
-    private static final int BROKER_OPTIONS_MAX = 4;
+    private static final int BROKER_OPTIONS_MAX = 5;
 
     private ArrayList<Security> curPortfolio;
     private Scanner keyboardInput;
@@ -51,9 +51,10 @@ public class BrokerMenu {
     public void displayMenu() {
         System.out.println("Welcome to the 237 Bank Brokerage!");
         System.out.println("Logged in as: " + bank.getCurAccountName());
-        System.out.println("1. Purchase a security");
-        System.out.println("2. View your portfolio");
-        System.out.println("3. Exit the brokerage");
+        System.out.println("1. Buy a security");
+        System.out.println("2. Sell a security");
+        System.out.println("3. View your portfolio");
+        System.out.println("4. Exit the brokerage");
     }
 
     public void doSelectedAction(int selection) {
@@ -61,10 +62,13 @@ public class BrokerMenu {
             case 1: 
                 buySecurity();
                 break;
-            case 2: 
-                displayPortfolio();
+            case 2:
+                sellSecurity();
                 break;
             case 3: 
+                displayPortfolio();
+                break;
+            case 4: 
                 exit = true;
                 break;
             default: assert(false);
@@ -126,6 +130,32 @@ public class BrokerMenu {
             return;
         }
         System.out.println("Insufficient funds to complete purchase.");
+    }
+
+    public void sellSecurity() {
+        if (curPortfolio.isEmpty()) {
+            System.out.println("Your portfolio is empty.");
+            return;
+        }
+        System.out.println("Your portfolio:");
+        displayPortfolio();
+        int selectionIndex = menu.getUserSelection(curPortfolio.size() + 1) - 1;
+        Security selection = curPortfolio.get(selectionIndex);
+        System.out.println("You have selected " + selection.getName());
+        System.out.print("Please enter the number of securities you would like to sell: ");
+        int sellAmount = menu.scanInt();
+        if (sellAmount <= 0 || sellAmount > selection.getAmount()) {
+            System.out.println("Number out of bounds. Please try again.");
+            return;
+        }
+        selection.setAmount(selection.getAmount() - sellAmount);
+        if (selection.getAmount() == 0) {
+            curPortfolio.remove(selection);
+        }
+        double sellValueRaw = sellAmount * selection.getValue();
+        double sellValueRounded = Math.round(sellValueRaw*100.0)/100.0;
+        bank.deposit(sellValueRounded);
+        System.out.println("Sale successful. Value of sale: $" + sellValueRounded);
     }
 
     public void displayPortfolio() {
