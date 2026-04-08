@@ -184,7 +184,7 @@ public class BrokerMenu {
         double sellValueRaw = sellAmount * selection.getValue();
         double sellValueRounded = Math.round(sellValueRaw*100.0)/100.0;
         bank.deposit(sellValueRounded);
-        bank.getCurrentAccount().addTransaction(
+        bank.addTransaction(
             "Sold " + sellAmount + " of " + selection.getName() +
             " for $" + String.format("%.2f", sellValueRounded));
         System.out.println("Sale successful. Value of sale: $" + sellValueRounded);
