@@ -10,10 +10,12 @@ public class BankManager {
 
     private ArrayList<BankAccount> accounts = new ArrayList<BankAccount>();
     private BankAccount curAccount;
+    private FraudDetector fraudDetector;
 
     public BankManager() {
         accounts.add(new BankAccount(ADMIN_ACCOUNT_NAME));
         curAccount = null;
+        fraudDetector = new FraudDetector();
     }
 
     public String getCurAccountName() {
@@ -22,6 +24,10 @@ public class BankManager {
 
     public double getBalance() {
         return curAccount.getBalance();
+    }
+
+    public boolean isLocked() {
+        return curAccount.isLocked();
     }
 
     public void setPassword(String password) {
@@ -77,8 +83,22 @@ public class BankManager {
         curAccount.deposit(amount);
     }
 
-    public void withdraw(double amount) {
-        curAccount.withdraw(amount);
+    public boolean withdraw(double amount) {
+        if (curAccount == null || curAccount.isLocked()) {
+            return false;
+        }
+
+        try {
+            curAccount.withdraw(amount);
+            curAccount.addTransaction("Withdrawal: $" + amount);
+
+            String fraudMessage = fraudDetector.detectFraud("withdraw", amount);
+            handleSuspiciousActivity(curAccount, fraudMessage);
+
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public boolean isLoggedIn() {
@@ -122,9 +142,20 @@ public class BankManager {
     }
 
     public boolean transferDirect(int amount, BankAccount fromAccount, BankAccount toAccount) {
+        if (fromAccount == null || toAccount == null || fromAccount.isLocked()) {
+            return false;
+        }
+
         try {
             fromAccount.withdraw(amount);
             toAccount.deposit(amount);
+
+            fromAccount.addTransaction("Transfer sent: $" + amount + " to " + toAccount.getName());
+            toAccount.addTransaction("Transfer received: $" + amount + " from " + fromAccount.getName());
+
+            String fraudMessage = fraudDetector.detectFraud("transfer", amount);
+            handleSuspiciousActivity(fromAccount, fraudMessage);
+
             return true;
         } catch (IllegalArgumentException e) {
             return false;
@@ -186,4 +217,36 @@ public class BankManager {
         return customerAccounts;
     }
 
+    private void handleSuspiciousActivity(BankAccount account, String message) {
+        if (message == null) {
+            return;
+        }
+
+        account.addTransaction("FRAUD ALERT: " + message);
+        account.incrementSuspiciousTransactionCount();
+
+        if (account.getSuspiciousTransactionCount() >= 3) {
+            account.lockAccount();
+            account.addTransaction("ACCOUNT LOCKED: 3 suspicious activities detected.");
+        }
+    }
+
+    public boolean currentAccountIsLocked() {
+        return curAccount != null && curAccount.isLocked();
+    }
+
+    public boolean unlockCurrentAccount(String passwordAttempt) {
+        if (curAccount == null) {
+            return false;
+        }
+
+        if (checkPassword(passwordAttempt)) {
+            curAccount.unlockAccount();
+            curAccount.resetSuspiciousTransactionCount();
+            curAccount.addTransaction("ACCOUNT UNLOCKED: Password verified.");
+            return true;
+        }
+
+        return false;
+    }
 }

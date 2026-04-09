@@ -27,6 +27,7 @@ public class MainMenu {
     private BrokerMenu broker;
     private Scanner keyboardInput;
     private boolean exit = false;
+    
 
     public MainMenu() {
         this.keyboardInput = new Scanner(System.in);
@@ -92,6 +93,28 @@ public class MainMenu {
         }
     }
 
+    private boolean handleLockedAccount() {
+        if (!bank.isLoggedIn()) {
+            return false;
+        }
+
+        if (bank.isLocked()) {
+            System.out.println("Account is locked due to suspicious activity.");
+            System.out.print("Enter password to unlock: ");
+
+            String password = keyboardInput.nextLine();
+
+            if (bank.unlockCurrentAccount(password)) {
+                System.out.println("Account unlocked.");
+                return true;
+            } else {
+                System.out.println("Incorrect password. Access denied.");
+                return false;
+            }
+        }
+
+        return true;
+    }
     public int getUserSelection(int max) {
         int selection = -1;
         while (selection < 1 || selection >= max) {
@@ -352,6 +375,9 @@ public class MainMenu {
     }
 
     public void doAdminSelection(int selection) {
+        if (!handleLockedAccount()) {
+            return;
+        }
         if (selection == 1) {
             depositUI();
         } else if (selection == 2) {
@@ -394,6 +420,9 @@ public class MainMenu {
     }
 
     public void doAccountSelection(int selection) {
+        if (!handleLockedAccount()) {
+            return;
+        }
         if (selection == 1) {
             depositUI();
         } else if (selection == 2) {
