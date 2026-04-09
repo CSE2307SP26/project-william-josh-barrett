@@ -26,8 +26,8 @@ public class BankManager {
         return curAccount.getBalance();
     }
 
-    public BankAccount getCurAccount() {
-        return curAccount;
+    public boolean isLocked() {
+        return curAccount.isLocked();
     }
 
     public void setPassword(String password) {
