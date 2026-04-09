@@ -14,11 +14,13 @@ public class MainMenu {
     }
 
     private static enum accountSelections {
-        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, EXIT, MAX
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD, EXIT,
+        MAX
     }
 
     private static enum adminSelections {
-        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, COLLECT_FEE, ADD_INTEREST, EXIT, MAX
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD,
+        COLLECT_FEE, ADD_INTEREST, EXIT, MAX
     }
 
     private BankManager bank = new BankManager();
@@ -79,12 +81,13 @@ public class MainMenu {
             System.out.println("7. Switch accounts");
             System.out.println("8. Create an account");
             System.out.println("9. Close an account");
+            System.out.println("10. Set account password/pin");
             if (bank.isAdminLoggedIn()) {
-                System.out.println("10. Collect a fee");
-                System.out.println("11. Add an interest payment");
-                System.out.println("12. Exit the app");
+                System.out.println("11. Collect a fee");
+                System.out.println("12. Add an interest payment");
+                System.out.println("13. Exit the app");
             } else {
-                System.out.println("10. Exit the app");
+                System.out.println("11. Exit the app");
             }
         }
     }
@@ -141,7 +144,7 @@ public class MainMenu {
         }
     }
 
-    public void getBalanceUI(){
+    public void getBalanceUI() {
         double balance = bank.getBalance();
         System.out.println("Current balance: $" + balance);
     }
@@ -270,7 +273,7 @@ public class MainMenu {
 
         ArrayList<BankAccount> customerAccountIndexes = bank.getCustomerAccounts();
         BankAccount selectedAccount = selectCustomerAccount(customerAccountIndexes);
-        
+
         while (true) {
             System.out.print("Enter interest payment amount: ");
             double amount = scanDouble();
@@ -285,7 +288,22 @@ public class MainMenu {
     }
 
     public void switchAccountsUI() {
-        bank.switchAccounts(selectAccount("Please select an account to switch to: "));
+        int index = selectAccount("Please select an account to switch to: ");
+        System.out.print("Enter password/pin: ");
+        String password = keyboardInput.nextLine();
+
+        if (bank.checkPassword(index, password)) {
+            bank.switchAccounts(index);
+        } else {
+            System.out.println("Incorrect password.");
+        }
+    }
+
+    public void setPasswordUI() {
+        System.out.print("Enter a new password/pin: ");
+        String password = keyboardInput.nextLine();
+        bank.setPassword(password);
+        System.out.println("Password successfully updated.");
     }
 
     public void run() {
@@ -321,11 +339,11 @@ public class MainMenu {
             transferUI();
         } else if (selection == 3) {
             withdrawalUI();
-        } else if (selection == 4){
+        } else if (selection == 4) {
             getBalanceUI();
-        } else if (selection == 5){
+        } else if (selection == 5) {
             displayTransactionHistory();
-        }else if (selection == 6){
+        } else if (selection == 6) {
             broker.open();
         } else if (selection == 7) {
             switchAccountsUI();
@@ -334,10 +352,12 @@ public class MainMenu {
         } else if (selection == 9) {
             closeAccountUI();
         } else if (selection == 10) {
-            collectFeeUI();
+            setPasswordUI();
         } else if (selection == 11) {
-            addInterestPaymentUI();
+            collectFeeUI();
         } else if (selection == 12) {
+            addInterestPaymentUI();
+        } else if (selection == 13) {
             exit = true;
         } else {
             assert (false);
@@ -363,9 +383,9 @@ public class MainMenu {
             withdrawalUI();
         } else if (selection == 4) {
             getBalanceUI();
-        } else if (selection == 5){
+        } else if (selection == 5) {
             displayTransactionHistory();
-        }else if (selection == 6){
+        } else if (selection == 6) {
             broker.open();
         } else if (selection == 7) {
             switchAccountsUI();
@@ -374,6 +394,8 @@ public class MainMenu {
         } else if (selection == 9) {
             closeAccountUI();
         } else if (selection == 10) {
+            setPasswordUI();
+        } else if (selection == 11) {
             exit = true;
         } else {
             assert (false);

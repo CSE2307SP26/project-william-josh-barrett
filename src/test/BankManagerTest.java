@@ -12,7 +12,7 @@ import main.BankManager;
 import main.Security;
 
 public class BankManagerTest {
-    
+
     @Test
     public void testGetCurAccountName() {
         BankManager bank = new BankManager();
@@ -31,6 +31,22 @@ public class BankManagerTest {
     }
 
     @Test
+    public void testSetAndCheckPassword() {
+        BankManager bank = new BankManager();
+        bank.createAccount("test_name");
+        bank.switchAccounts(1);
+
+        // Assume default password is null
+        assert (bank.checkPassword(null));
+        assert (!bank.checkPassword("wrongpass"));
+
+        bank.setPassword("securepass");
+        assert (bank.checkPassword("securepass"));
+        assert (!bank.checkPassword("securepas"));
+        assert (!bank.checkPassword(null));
+    }
+
+    @Test
     public void testGetSize() {
         BankManager bank = new BankManager();
         assertEquals(bank.getSize(), 1);
@@ -46,10 +62,10 @@ public class BankManagerTest {
         bank.createAccount("test_1");
         bank.switchAccounts(1);
         ArrayList<Security> portfolio = bank.getPortfolio();
-        assert(portfolio.isEmpty());
+        assert (portfolio.isEmpty());
         portfolio.add(new Security("testSecurity", 0, 0));
         ArrayList<Security> portfolio_refresh = bank.getPortfolio();
-        assertEquals(portfolio_refresh.getFirst().getName(), "testSecurity");
+        assertEquals(portfolio_refresh.get(0).getName(), "testSecurity");
     }
 
     @Test
@@ -70,14 +86,14 @@ public class BankManagerTest {
     @Test
     public void testCheckBankIsEmpty() {
         BankManager bank = new BankManager();
-        assert(bank.checkBankIsEmpty());
+        assert (bank.checkBankIsEmpty());
         bank.createAccount("test_1");
-        assert(bank.checkBankIsEmpty());
+        assert (bank.checkBankIsEmpty());
         bank.createAccount("test_2");
-        assert(bank.checkBankIsEmpty());
+        assert (bank.checkBankIsEmpty());
         bank.switchAccounts(1);
         bank.deposit(10);
-        assert(!bank.checkBankIsEmpty());
+        assert (!bank.checkBankIsEmpty());
     }
 
     @Test
@@ -93,7 +109,7 @@ public class BankManagerTest {
         BankManager bank = new BankManager();
         bank.createAccount("test_1");
         bank.switchAccounts(1);
-        assertThrows(IllegalArgumentException.class, ()->{
+        assertThrows(IllegalArgumentException.class, () -> {
             bank.deposit(-1);
         });
     }
@@ -103,7 +119,7 @@ public class BankManagerTest {
         BankManager bank = new BankManager();
         bank.createAccount("test_1");
         bank.switchAccounts(1);
-        assertThrows(IllegalArgumentException.class, ()->{
+        assertThrows(IllegalArgumentException.class, () -> {
             bank.deposit(0);
         });
     }
@@ -124,7 +140,7 @@ public class BankManagerTest {
         bank.createAccount("test_1");
         bank.switchAccounts(1);
         bank.deposit(2);
-        assertThrows(IllegalArgumentException.class, ()->{
+        assertThrows(IllegalArgumentException.class, () -> {
             bank.withdraw(-1);
         });
     }
@@ -135,7 +151,7 @@ public class BankManagerTest {
         bank.createAccount("test_1");
         bank.switchAccounts(1);
         bank.deposit(2);
-        assertThrows(IllegalArgumentException.class, ()->{
+        assertThrows(IllegalArgumentException.class, () -> {
             bank.withdraw(0);
         });
     }
@@ -146,7 +162,7 @@ public class BankManagerTest {
         bank.createAccount("test_1");
         bank.switchAccounts(1);
         bank.deposit(2);
-        assertThrows(IllegalArgumentException.class, ()->{
+        assertThrows(IllegalArgumentException.class, () -> {
             bank.withdraw(3);
         });
     }
@@ -154,7 +170,7 @@ public class BankManagerTest {
     @Test
     public void testIsNotLoggedIn() {
         BankManager bank = new BankManager();
-        assert(!bank.isLoggedIn());
+        assert (!bank.isLoggedIn());
     }
 
     @Test
@@ -162,33 +178,33 @@ public class BankManagerTest {
         BankManager bank = new BankManager();
         bank.createAccount("test_1");
         bank.switchAccounts(1);
-        assert(bank.isLoggedIn());
+        assert (bank.isLoggedIn());
     }
 
     @Test
     public void testIsAdminAccountIndex() {
         BankManager bank = new BankManager();
-        assert(bank.isAdminAccount(0));
+        assert (bank.isAdminAccount(0));
         bank.createAccount("test_1");
-        assert(!bank.isAdminAccount(1));
+        assert (!bank.isAdminAccount(1));
     }
 
     @Test
     public void testIsAdminAccountObject() {
         BankManager bank = new BankManager();
-        assert(bank.isAdminAccount(bank.getAdminAccount()));
-        assert(!bank.isAdminAccount(bank.createAccount("test_1")));
+        assert (bank.isAdminAccount(bank.getAdminAccount()));
+        assert (!bank.isAdminAccount(bank.createAccount("test_1")));
     }
 
     @Test
     public void testIsAdminLoggedIn() {
         BankManager bank = new BankManager();
-        assert(!bank.isAdminLoggedIn());
+        assert (!bank.isAdminLoggedIn());
         bank.switchAccounts(0);
-        assert(bank.isAdminLoggedIn());
+        assert (bank.isAdminLoggedIn());
         bank.createAccount("test_1");
         bank.switchAccounts(1);
-        assert(!bank.isAdminLoggedIn());
+        assert (!bank.isAdminLoggedIn());
     }
 
     @Test
@@ -206,7 +222,7 @@ public class BankManagerTest {
         bank.createAccount("toAccount");
         bank.switchAccounts(1);
         bank.deposit(20);
-        bank.transferIndex(10, 1,2);
+        bank.transferIndex(10, 1, 2);
         assertEquals(bank.getBalance(), 10, 0.0001);
         bank.switchAccounts(2);
         assertEquals(bank.getBalance(), 10, 0.0001);
@@ -218,7 +234,7 @@ public class BankManagerTest {
         BankAccount fromAccount = new BankAccount("fromAccount");
         BankAccount toAccount = new BankAccount("toAccount");
         toAccount.deposit(10);
-        assert(!bank.transferDirect(1, fromAccount, toAccount));
+        assert (!bank.transferDirect(1, fromAccount, toAccount));
     }
 
     @Test
@@ -251,7 +267,7 @@ public class BankManagerTest {
         BankAccount toAccount = new BankAccount("fromAccount");
         fromAccount.deposit(10);
         toAccount.deposit(10);
-        assert(!bank.transferDirect(-1, fromAccount, toAccount));
+        assert (!bank.transferDirect(-1, fromAccount, toAccount));
     }
 
     @Test
@@ -261,7 +277,7 @@ public class BankManagerTest {
         BankAccount toAccount = new BankAccount("fromAccount");
         fromAccount.deposit(10);
         toAccount.deposit(10);
-        assert(!bank.transferDirect(0, fromAccount, toAccount));
+        assert (!bank.transferDirect(0, fromAccount, toAccount));
     }
 
     @Test
@@ -283,7 +299,7 @@ public class BankManagerTest {
         BankAccount toAccount = new BankAccount("fromAccount");
         fromAccount.deposit(10);
         toAccount.deposit(10);
-        assert(!bank.transferDirect(11, fromAccount, toAccount));
+        assert (!bank.transferDirect(11, fromAccount, toAccount));
     }
 
     @Test
@@ -309,7 +325,7 @@ public class BankManagerTest {
     @Test
     public void testSwitchAccounts() {
         BankManager bank = new BankManager();
-        assertThrows(NullPointerException.class, ()->{
+        assertThrows(NullPointerException.class, () -> {
             bank.getCurAccountName();
         });
         bank.createAccount("test_1");
@@ -334,7 +350,7 @@ public class BankManagerTest {
         BankManager bank = new BankManager();
         bank.createAccount("test_1");
         bank.switchAccounts(1);
-        assertThrows(IllegalArgumentException.class, ()->{
+        assertThrows(IllegalArgumentException.class, () -> {
             bank.addInterestPayment(1, 0);
         });
     }
@@ -344,7 +360,7 @@ public class BankManagerTest {
         BankManager bank = new BankManager();
         bank.createAccount("test_1");
         bank.switchAccounts(1);
-        assertThrows(IllegalArgumentException.class, ()->{
+        assertThrows(IllegalArgumentException.class, () -> {
             bank.addInterestPayment(1, -10);
         });
     }
