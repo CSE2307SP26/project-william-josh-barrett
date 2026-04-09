@@ -98,7 +98,7 @@ public class MainMenu {
             return false;
         }
 
-        if (bank.getCurAccount().isLocked()) {
+        if (bank.isLocked()) {
             System.out.println("Account is locked due to suspicious activity.");
             System.out.print("Enter password to unlock: ");
 
