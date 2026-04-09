@@ -118,6 +118,14 @@ public class BankAccountTest {
     }
 
     @Test
+    public void testSetAndGetPassword() {
+        BankAccount testAccount = new BankAccount("passwordAccount");
+        assertEquals(null, testAccount.getPassword());
+        testAccount.setPassword("mySecurePin123");
+        assertEquals("mySecurePin123", testAccount.getPassword());
+    }
+
+    @Test
     public void testGetName() {
         BankAccount testAccount = new BankAccount("testName");
         assertEquals(testAccount.getName(), "testName");
