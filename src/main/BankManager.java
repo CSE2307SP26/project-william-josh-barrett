@@ -24,6 +24,26 @@ public class BankManager {
         return curAccount.getBalance();
     }
 
+    public void setPassword(String password) {
+        curAccount.setPassword(password);
+    }
+
+    public boolean checkPassword(String password) {
+        String curPassword = curAccount.getPassword();
+        if (curPassword == null || curPassword.equals("")) {
+            return password == null || password.equals("");
+        }
+        return curPassword.equals(password);
+    }
+
+    public boolean checkPassword(int index, String password) {
+        String accountPassword = accounts.get(index).getPassword();
+        if (accountPassword == null || accountPassword.equals("")) {
+            return password == null || password.equals("");
+        }
+        return accountPassword.equals(password);
+    }
+
     public int getSize() {
         return accounts.size();
     }
@@ -60,7 +80,7 @@ public class BankManager {
     public void withdraw(double amount) {
         curAccount.withdraw(amount);
     }
-    
+
     public boolean isLoggedIn() {
         return curAccount != null;
     }
@@ -112,11 +132,16 @@ public class BankManager {
     }
 
     public BankAccount createAccount(String name) {
+        return createAccount(name, null);
+    }
+
+    public BankAccount createAccount(String name, String password) {
         if (name.equalsIgnoreCase(ADMIN_ACCOUNT_NAME)) {
             curAccount = getAdminAccount();
             return curAccount;
         }
         BankAccount new_account = new BankAccount(name);
+        new_account.setPassword(password);
         accounts.add(new_account);
         curAccount = accounts.get(accounts.size() - 1);
         return curAccount;
