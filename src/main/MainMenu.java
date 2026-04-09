@@ -192,7 +192,14 @@ public class MainMenu {
     public void createAccountUI() {
         System.out.print("Please enter the account name: ");
         String name = keyboardInput.nextLine();
-        bank.createAccount(name);
+        System.out.print("Please enter a password/pin (or leave blank for none): ");
+        String password = keyboardInput.nextLine();
+
+        if (password.isEmpty()) {
+            password = null;
+        }
+
+        bank.createAccount(name, password);
         if (bank.isAdminLoggedIn()) {
             System.out.println("Logged in as admin.");
         }

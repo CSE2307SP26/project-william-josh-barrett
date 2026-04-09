@@ -132,11 +132,16 @@ public class BankManager {
     }
 
     public BankAccount createAccount(String name) {
+        return createAccount(name, null);
+    }
+
+    public BankAccount createAccount(String name, String password) {
         if (name.equalsIgnoreCase(ADMIN_ACCOUNT_NAME)) {
             curAccount = getAdminAccount();
             return curAccount;
         }
         BankAccount new_account = new BankAccount(name);
+        new_account.setPassword(password);
         accounts.add(new_account);
         curAccount = accounts.get(accounts.size() - 1);
         return curAccount;
