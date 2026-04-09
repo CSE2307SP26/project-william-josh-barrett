@@ -311,7 +311,7 @@ public class BankManagerTest {
         // default password should be null
         assert (bank.checkPassword(null));
 
-        bank.createAccount("test_2", "myPass123");
+        bank.createAccount("test_2", "myPass123", main.AccountType.SAVINGS);
         bank.switchAccounts(2);
         assertEquals(bank.getCurAccountName(), "test_2");
         assert (bank.checkPassword("myPass123"));

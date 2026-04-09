@@ -132,15 +132,26 @@ public class BankManager {
     }
 
     public BankAccount createAccount(String name) {
-        return createAccount(name, null);
+        return createAccount(name, null, AccountType.CHECKING);
     }
 
     public BankAccount createAccount(String name, String password) {
+        return createAccount(name, password, AccountType.CHECKING);
+    }
+
+    public BankAccount createAccount(String name, String password, AccountType type) {
         if (name.equalsIgnoreCase(ADMIN_ACCOUNT_NAME)) {
             curAccount = getAdminAccount();
             return curAccount;
         }
-        BankAccount new_account = new BankAccount(name);
+
+        BankAccount new_account;
+        if (type == AccountType.SAVINGS) {
+            new_account = new SavingsAccount(name);
+        } else {
+            new_account = new CheckingAccount(name);
+        }
+
         new_account.setPassword(password);
         accounts.add(new_account);
         curAccount = accounts.get(accounts.size() - 1);

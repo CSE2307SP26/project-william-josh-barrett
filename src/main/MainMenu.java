@@ -192,6 +192,17 @@ public class MainMenu {
     public void createAccountUI() {
         System.out.print("Please enter the account name: ");
         String name = keyboardInput.nextLine();
+
+        String typeStr = "";
+        while (true) {
+            System.out.print("What type of account? (checking/savings): ");
+            typeStr = keyboardInput.nextLine().trim();
+            if (typeStr.equalsIgnoreCase("checking") || typeStr.equalsIgnoreCase("savings")) {
+                break;
+            }
+            System.out.println("Invalid account type. Please try again.");
+        }
+
         System.out.print("Please enter a password/pin (or leave blank for none): ");
         String password = keyboardInput.nextLine();
 
@@ -199,7 +210,8 @@ public class MainMenu {
             password = null;
         }
 
-        bank.createAccount(name, password);
+        AccountType type = typeStr.equalsIgnoreCase("savings") ? AccountType.SAVINGS : AccountType.CHECKING;
+        bank.createAccount(name, password, type);
         if (bank.isAdminLoggedIn()) {
             System.out.println("Logged in as admin.");
         }
