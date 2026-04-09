@@ -9,6 +9,8 @@ public class BankAccount {
     private String password;
     private ArrayList<Security> portfolio;
     private ArrayList<String> transactionHistory;
+    private boolean locked;
+    private int suspiciousTransactionCount;
 
     public BankAccount(String name) {
         this.balance = 0;
@@ -17,6 +19,8 @@ public class BankAccount {
         this.portfolio = new ArrayList<Security>();
         this.transactionHistory = new ArrayList<String>();
         this.transactionHistory.add("Account created.");
+        this.locked = false;
+        this.suspiciousTransactionCount = 0;
     }
 
     public void setPassword(String password) {
@@ -29,6 +33,31 @@ public class BankAccount {
 
     public String getName() {
         return this.accountName;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void lockAccount() {
+        locked = true;
+    }
+
+    public void unlockAccount() {
+        locked = false;
+        suspiciousTransactionCount = 0;
+    }
+
+    public int getSuspiciousTransactionCount() {
+        return suspiciousTransactionCount;
+    }
+
+    public void incrementSuspiciousTransactionCount() {
+        suspiciousTransactionCount++;
+    }
+
+    public void resetSuspiciousTransactionCount() {
+        suspiciousTransactionCount = 0;
     }
 
     public ArrayList<Security> getPortfolio() {
