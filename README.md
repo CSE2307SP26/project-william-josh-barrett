@@ -37,6 +37,6 @@ Iteration 2:
   To the best of our knowledge, all of our implemented features work.  
 
 ## What commands are needed to compile and run your code from the command line?
-  To compile and run the program, simply run runApp.sh:  
+  To compile and run the program, simply run runApp.sh. Here are instructions for MacOS/Linux:  
     1. Within a command line, navigate to the repository's base directory, and execute the following command: "./runApp.sh"  
     2. If you get an error about permissions, try running "chmod +x runApp.sh" and then retrying "./runApp.sh"  
