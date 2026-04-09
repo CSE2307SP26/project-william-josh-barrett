@@ -26,7 +26,7 @@ public class MainMenu {
     private BankManager bank = new BankManager();
     private BrokerMenu broker;
     private Scanner keyboardInput;
-    private boolean exit = false;;
+    private boolean exit = false;
     
 
     public MainMenu() {
