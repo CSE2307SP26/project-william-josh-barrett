@@ -198,6 +198,14 @@ public class BankManager {
         return true;
     }
 
+    public boolean unlockAccount(int index) {
+        if (isAdminAccount(index)) {
+            return false;
+        }
+        accounts.get(index).unlockAccount();
+        return true;
+    }
+
     public void switchAccounts(int index) {
         curAccount = accounts.get(index);
     }
