@@ -20,14 +20,13 @@ public class MainMenu {
 
     private static enum adminSelections {
         MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD,
-        COLLECT_FEE, ADD_INTEREST, EXIT, MAX
+        COLLECT_FEE, ADD_INTEREST, UNLOCK_ACCOUNT, EXIT, MAX
     }
 
     private BankManager bank = new BankManager();
     private BrokerMenu broker;
     private Scanner keyboardInput;
     private boolean exit = false;
-    
 
     public MainMenu() {
         this.keyboardInput = new Scanner(System.in);
@@ -86,7 +85,8 @@ public class MainMenu {
             if (bank.isAdminLoggedIn()) {
                 System.out.println("11. Collect a fee");
                 System.out.println("12. Add an interest payment");
-                System.out.println("13. Exit the app");
+                System.out.println("13. Unlock an account");
+                System.out.println("14. Exit the app");
             } else {
                 System.out.println("11. Exit the app");
             }
@@ -115,6 +115,7 @@ public class MainMenu {
 
         return true;
     }
+
     public int getUserSelection(int max) {
         int selection = -1;
         while (selection < 1 || selection >= max) {
@@ -248,6 +249,19 @@ public class MainMenu {
         }
         if (!bank.closeAccount(selectedIndex)) {
             switchAccountsUI();
+        }
+    }
+
+    public void unlockAccountUI() {
+        int selectedIndex = selectAccount("Please select an account to unlock: ");
+        if (bank.isAdminAccount(selectedIndex)) {
+            System.out.println("The admin account cannot be locked/unlocked.");
+            return;
+        }
+        if (bank.unlockAccount(selectedIndex)) {
+            System.out.println("Successfully unlocked the account.");
+        } else {
+            System.out.println("Failed to unlock the account.");
         }
     }
 
@@ -403,6 +417,8 @@ public class MainMenu {
         } else if (selection == 12) {
             addInterestPaymentUI();
         } else if (selection == 13) {
+            unlockAccountUI();
+        } else if (selection == 14) {
             exit = true;
         } else {
             assert (false);
