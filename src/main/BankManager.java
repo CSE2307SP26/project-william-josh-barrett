@@ -257,4 +257,56 @@ public class BankManager {
 
         return false;
     }
+
+    /**
+     * Set the interest rate for a SavingsAccount (admin only).
+     * @param accountIndex the index of the account to modify
+     * @param interestRate the new interest rate (must be between 0 and 1)
+     * @return true if successful, false if account is not a SavingsAccount or index is invalid
+     */
+    public boolean setSavingsAccountInterestRate(int accountIndex, double interestRate) {
+        if (accountIndex < 0 || accountIndex >= accounts.size()) {
+            return false;
+        }
+
+        BankAccount account = accounts.get(accountIndex);
+        if (!(account instanceof SavingsAccount)) {
+            return false;
+        }
+
+        try {
+            SavingsAccount savingsAccount = (SavingsAccount) account;
+            savingsAccount.setInterestRate(interestRate);
+            account.addTransaction("Interest rate updated to: " + (interestRate * 100) + "%");
+            return true;
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Set the daily transaction limit for a CheckingAccount (admin only).
+     * @param accountIndex the index of the account to modify
+     * @param dailyLimit the new daily transaction limit
+     * @return true if successful, false if account is not a CheckingAccount or index is invalid
+     */
+    public boolean setCheckingAccountDailyLimit(int accountIndex, double dailyLimit) {
+        if (accountIndex < 0 || accountIndex >= accounts.size()) {
+            return false;
+        }
+
+        BankAccount account = accounts.get(accountIndex);
+        if (!(account instanceof CheckingAccount)) {
+            return false;
+        }
+
+        try {
+            CheckingAccount checkingAccount = (CheckingAccount) account;
+            checkingAccount.setDailyTransactionLimit(dailyLimit);
+            account.addTransaction("Daily transaction limit updated to: $" + dailyLimit);
+            return true;
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
+    }
 }
