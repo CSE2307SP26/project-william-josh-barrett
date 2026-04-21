@@ -6,20 +6,22 @@ import java.util.Scanner;
 
 public class BrokerMenu {
 
-    private static final int BROKER_OPTIONS_MAX = 5;
+    private static enum brokerSelections {
+        MIN, BUY, SELL, DISPLAY, EXIT, MAX
+    }
 
     private ArrayList<Security> curPortfolio;
     private Scanner keyboardInput;
     private BankManager bank;
-    private MainMenu menu;
+    private IOUtils io;
     private boolean exit;
     private Random rng;
 
-    public BrokerMenu(MainMenu mainMenu, BankManager bankManager) {
-        keyboardInput = new Scanner(System.in);
-        rng = new Random();
-        bank = bankManager;
-        menu = mainMenu;
+    public BrokerMenu(IOUtils io, BankManager bank) {
+        this.keyboardInput = new Scanner(System.in);
+        this.rng = new Random();
+        this.bank = bank;
+        this.io = io;
     }
 
     public void updatePortfolio() {
@@ -45,7 +47,7 @@ public class BrokerMenu {
         updatePortfolio();
         while (true) {
             displayMenu();
-            int selection = menu.getUserSelection(BROKER_OPTIONS_MAX);
+            int selection = io.getUserSelection(brokerSelections.MAX.ordinal());
             doSelectedAction(selection);
             if (exit) {
                 break;
@@ -63,19 +65,11 @@ public class BrokerMenu {
     }
 
     public void doSelectedAction(int selection) {
-        switch (selection) {
-            case 1: 
-                attemptBuySecurity();
-                break;
-            case 2:
-                attemptSellSecurity();
-                break;
-            case 3: 
-                displayPortfolio();
-                break;
-            case 4: 
-                exit = true;
-                break;
+        switch (brokerSelections.values()[selection]) {
+            case brokerSelections.BUY: attemptBuySecurity(); break;
+            case brokerSelections.SELL: attemptSellSecurity(); break;
+            case brokerSelections.DISPLAY: displayPortfolio(); break;
+            case brokerSelections.EXIT: exit = true; break;
             default: assert(false);
         }
     }
@@ -96,7 +90,7 @@ public class BrokerMenu {
         System.out.println("You already own " + security.getAmount() + " of " + security.getName());
         System.out.println("The current value is $" + secValue);
         System.out.print("Enter the amount you would like to purchase: ");
-        int amount = menu.scanInt();
+        int amount = io.scanInt();
         if (amount <= 0) {
             System.out.println("Purchase cancelled.");
             return;
@@ -119,7 +113,7 @@ public class BrokerMenu {
         double value = Math.round((1.0 + 99.0*rng.nextDouble())*100.0)/100.0;
         System.out.println("The current value of " + securityName + " is $" + value);
         System.out.print("Enter the amount you would like to purchase: ");
-        int amount = menu.scanInt();
+        int amount = io.scanInt();
         if (amount <= 0) {
             System.out.println("Purchase cancelled.");
             return;
@@ -131,7 +125,7 @@ public class BrokerMenu {
             bank.addTransaction(
                 "Bought " + amount + " of " + securityName +
                 " for $" + buyValue
-    );
+            );
             System.out.println("Purchase successful.");
             return;
         }
@@ -156,7 +150,7 @@ public class BrokerMenu {
         if (!displayPortfolio()) {
             return null;
         }
-        int selectionIndex = menu.getUserSelection(curPortfolio.size() + 1) - 1;
+        int selectionIndex = io.getUserSelection(curPortfolio.size() + 1) - 1;
         Security selection = curPortfolio.get(selectionIndex);
         System.out.println("You have selected " + selection.getName());
         return selection;
@@ -164,7 +158,7 @@ public class BrokerMenu {
 
     public int getSellAmount(Security selection) {
         System.out.print("Please enter the number of securities you would like to sell: ");
-        int sellAmount = menu.scanInt();
+        int sellAmount = io.scanInt();
         if (sellAmount <= 0) {
             System.out.println("Sale Cancelled");
             return -1;
