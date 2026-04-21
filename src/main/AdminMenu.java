@@ -5,9 +5,6 @@ import java.util.ArrayList;
 public class AdminMenu extends CustomerMenu {
 
     private static final int EMPTY = 0;
-
-    private boolean exit;
-    private boolean switch_account;
     
     private static enum adminSelections {
         MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD,
@@ -141,10 +138,7 @@ public class AdminMenu extends CustomerMenu {
             case adminSelections.CHECK_BALANCE: getBalanceUI(); break;
             case adminSelections.HISTORY: displayTransactionHistory(); break;
             case adminSelections.BROKERAGE: broker.open(); break;
-            case adminSelections.SWITCH: 
-                switchAccountsUI();
-                switch_account = true;
-                break;
+            case adminSelections.SWITCH: switchAccountsUI(); break;
             case adminSelections.CREATE: createAccountUI(); break;
             case adminSelections.CLOSE: closeAccountUI(); break;
             case adminSelections.SET_PASSWORD: setPasswordUI(); break;

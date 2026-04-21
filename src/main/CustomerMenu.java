@@ -5,9 +5,6 @@ import java.util.ArrayList;
 public class CustomerMenu extends StartMenu {
 
     protected BrokerMenu broker;
-
-    private boolean exit;
-    private boolean switch_account;
     
     private static enum customerSelections {
         MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD, EXIT,
@@ -143,6 +140,7 @@ public class CustomerMenu extends StartMenu {
 
         if (bank.checkPassword(index, password)) {
             bank.switchAccounts(index);
+            switch_account = true;
         } else {
             System.out.println("Incorrect password.");
         }
@@ -177,10 +175,7 @@ public class CustomerMenu extends StartMenu {
             case customerSelections.CHECK_BALANCE: getBalanceUI(); break;
             case customerSelections.HISTORY: displayTransactionHistory(); break;
             case customerSelections.BROKERAGE: broker.open(); break;
-            case customerSelections.SWITCH: 
-                switchAccountsUI();
-                switch_account = true;
-                break;
+            case customerSelections.SWITCH: switchAccountsUI(); break;
             case customerSelections.CREATE: createAccountUI(); break;
             case customerSelections.CLOSE: closeAccountUI(); break;
             case customerSelections.SET_PASSWORD: setPasswordUI(); break;
