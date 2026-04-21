@@ -49,7 +49,7 @@ public class SavingsAccount extends BankAccount {
     private void validateInterestRate(double interestRate) {
         if (interestRate < MINIMUM_INTEREST_RATE || interestRate > MAXIMUM_INTEREST_RATE) {
             throw new IllegalArgumentException(
-                "Interest rate must be between " + MINIMUM_INTEREST_RATE + " and " + MAXIMUM_INTEREST_RATE);
+                    "Interest rate must be between " + MINIMUM_INTEREST_RATE + " and " + MAXIMUM_INTEREST_RATE);
         }
     }
 

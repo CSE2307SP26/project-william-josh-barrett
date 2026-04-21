@@ -50,7 +50,7 @@ public class CheckingAccount extends BankAccount {
     private void validateDailyLimit(double dailyTransactionLimit) {
         if (dailyTransactionLimit < MINIMUM_DAILY_LIMIT) {
             throw new IllegalArgumentException(
-                "Daily transaction limit must be at least " + MINIMUM_DAILY_LIMIT);
+                    "Daily transaction limit must be at least " + MINIMUM_DAILY_LIMIT);
         }
     }
 

@@ -30,8 +30,6 @@ public class CheckingAccountTest {
         assertEquals(1000.00, acc.getDailyTransactionLimit(), 0.0001);
     }
 
-
-
     // Daily Withdrawal Total Tests
     @Test
     public void testInitialDailyWithdrawalTotal() {

@@ -8,7 +8,7 @@ public class AdminMenu extends CustomerMenu {
 
     private boolean exit;
     private boolean switch_account;
-    
+
     private static enum adminSelections {
         MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD,
         COLLECT_FEE, ADD_INTEREST, UNLOCK_ACCOUNT, EXIT, MAX
@@ -134,25 +134,52 @@ public class AdminMenu extends CustomerMenu {
         if (!handleLockedAccount()) {
             return;
         }
-        switch(adminSelections.values()[selection]) {
-            case adminSelections.DEPOSIT: depositUI(); break;
-            case adminSelections.TRANSFER: transferUI(); break;
-            case adminSelections.WITHDRAW: withdrawalUI(); break;
-            case adminSelections.CHECK_BALANCE: getBalanceUI(); break;
-            case adminSelections.HISTORY: displayTransactionHistory(); break;
-            case adminSelections.BROKERAGE: broker.open(); break;
-            case adminSelections.SWITCH: 
+        switch (adminSelections.values()[selection]) {
+            case DEPOSIT:
+                depositUI();
+                break;
+            case TRANSFER:
+                transferUI();
+                break;
+            case WITHDRAW:
+                withdrawalUI();
+                break;
+            case CHECK_BALANCE:
+                getBalanceUI();
+                break;
+            case HISTORY:
+                displayTransactionHistory();
+                break;
+            case BROKERAGE:
+                broker.open();
+                break;
+            case SWITCH:
                 switchAccountsUI();
                 switch_account = true;
                 break;
-            case adminSelections.CREATE: createAccountUI(); break;
-            case adminSelections.CLOSE: closeAccountUI(); break;
-            case adminSelections.SET_PASSWORD: setPasswordUI(); break;
-            case adminSelections.COLLECT_FEE: collectFeeUI(); break;
-            case adminSelections.ADD_INTEREST: addInterestPaymentUI(); break;
-            case adminSelections.UNLOCK_ACCOUNT: unlockAccountUI(); break;
-            case adminSelections.EXIT: exit = true; break;
-            default: assert (false);
+            case CREATE:
+                createAccountUI();
+                break;
+            case CLOSE:
+                closeAccountUI();
+                break;
+            case SET_PASSWORD:
+                setPasswordUI();
+                break;
+            case COLLECT_FEE:
+                collectFeeUI();
+                break;
+            case ADD_INTEREST:
+                addInterestPaymentUI();
+                break;
+            case UNLOCK_ACCOUNT:
+                unlockAccountUI();
+                break;
+            case EXIT:
+                exit = true;
+                break;
+            default:
+                assert (false);
         }
     }
 

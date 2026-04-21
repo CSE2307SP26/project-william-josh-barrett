@@ -8,7 +8,7 @@ public class CustomerMenu extends StartMenu {
 
     private boolean exit;
     private boolean switch_account;
-    
+
     private static enum customerSelections {
         MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD, EXIT,
         MAX
@@ -170,22 +170,43 @@ public class CustomerMenu extends StartMenu {
         if (!handleLockedAccount()) {
             return;
         }
-        switch(customerSelections.values()[selection]) {
-            case customerSelections.DEPOSIT: depositUI(); break;
-            case customerSelections.TRANSFER: transferUI(); break;
-            case customerSelections.WITHDRAW: withdrawalUI(); break;
-            case customerSelections.CHECK_BALANCE: getBalanceUI(); break;
-            case customerSelections.HISTORY: displayTransactionHistory(); break;
-            case customerSelections.BROKERAGE: broker.open(); break;
-            case customerSelections.SWITCH: 
+        switch (customerSelections.values()[selection]) {
+            case DEPOSIT:
+                depositUI();
+                break;
+            case TRANSFER:
+                transferUI();
+                break;
+            case WITHDRAW:
+                withdrawalUI();
+                break;
+            case CHECK_BALANCE:
+                getBalanceUI();
+                break;
+            case HISTORY:
+                displayTransactionHistory();
+                break;
+            case BROKERAGE:
+                broker.open();
+                break;
+            case SWITCH:
                 switchAccountsUI();
                 switch_account = true;
                 break;
-            case customerSelections.CREATE: createAccountUI(); break;
-            case customerSelections.CLOSE: closeAccountUI(); break;
-            case customerSelections.SET_PASSWORD: setPasswordUI(); break;
-            case customerSelections.EXIT: exit = true; break;
-            default: assert (false);
+            case CREATE:
+                createAccountUI();
+                break;
+            case CLOSE:
+                closeAccountUI();
+                break;
+            case SET_PASSWORD:
+                setPasswordUI();
+                break;
+            case EXIT:
+                exit = true;
+                break;
+            default:
+                assert (false);
         }
     }
 

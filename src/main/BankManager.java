@@ -129,6 +129,15 @@ public class BankManager {
         return null;
     }
 
+    public int findAccountIndexByName(String name) {
+        for (int i = 0; i < accounts.size(); i++) {
+            if (accounts.get(i).getName().equalsIgnoreCase(name)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void printAccounts() {
         int index = 1;
         for (BankAccount account : accounts) {
@@ -260,9 +269,11 @@ public class BankManager {
 
     /**
      * Set the interest rate for a SavingsAccount (admin only).
+     * 
      * @param accountIndex the index of the account to modify
      * @param interestRate the new interest rate (must be between 0 and 1)
-     * @return true if successful, false if account is not a SavingsAccount or index is invalid
+     * @return true if successful, false if account is not a SavingsAccount or index
+     *         is invalid
      */
     public boolean setSavingsAccountInterestRate(int accountIndex, double interestRate) {
         if (accountIndex < 0 || accountIndex >= accounts.size()) {
@@ -286,9 +297,11 @@ public class BankManager {
 
     /**
      * Set the daily transaction limit for a CheckingAccount (admin only).
+     * 
      * @param accountIndex the index of the account to modify
-     * @param dailyLimit the new daily transaction limit
-     * @return true if successful, false if account is not a CheckingAccount or index is invalid
+     * @param dailyLimit   the new daily transaction limit
+     * @return true if successful, false if account is not a CheckingAccount or
+     *         index is invalid
      */
     public boolean setCheckingAccountDailyLimit(int accountIndex, double dailyLimit) {
         if (accountIndex < 0 || accountIndex >= accounts.size()) {

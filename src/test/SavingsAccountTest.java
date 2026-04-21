@@ -28,8 +28,6 @@ public class SavingsAccountTest {
         assertEquals(0.02, acc.getInterestRate(), 0.0001);
     }
 
-
-
     // Deposit and Withdrawal Tests
     @Test
     public void testDeposit() {

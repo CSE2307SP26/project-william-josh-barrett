@@ -66,11 +66,20 @@ public class BrokerMenu {
 
     public void doSelectedAction(int selection) {
         switch (brokerSelections.values()[selection]) {
-            case brokerSelections.BUY: attemptBuySecurity(); break;
-            case brokerSelections.SELL: attemptSellSecurity(); break;
-            case brokerSelections.DISPLAY: displayPortfolio(); break;
-            case brokerSelections.EXIT: exit = true; break;
-            default: assert(false);
+            case BUY:
+                attemptBuySecurity();
+                break;
+            case SELL:
+                attemptSellSecurity();
+                break;
+            case DISPLAY:
+                displayPortfolio();
+                break;
+            case EXIT:
+                exit = true;
+                break;
+            default:
+                assert (false);
         }
     }
 
@@ -95,14 +104,13 @@ public class BrokerMenu {
             System.out.println("Purchase cancelled.");
             return;
         }
-        double buyValue = Math.round((amount * secValue)*100.0)/100.0;
+        double buyValue = Math.round((amount * secValue) * 100.0) / 100.0;
         if (buyValue <= bank.getBalance()) {
             bank.withdraw(buyValue);
             security.setAmount(amount + security.getAmount());
             bank.addTransaction(
-                "Bought " + amount + " of " + security.getName() +
-                " for $" + buyValue
-    );
+                    "Bought " + amount + " of " + security.getName() +
+                            " for $" + buyValue);
             System.out.println("Purchase successful.");
             return;
         }
@@ -110,7 +118,7 @@ public class BrokerMenu {
     }
 
     public void buyNewSecurity(String securityName) {
-        double value = Math.round((1.0 + 99.0*rng.nextDouble())*100.0)/100.0;
+        double value = Math.round((1.0 + 99.0 * rng.nextDouble()) * 100.0) / 100.0;
         System.out.println("The current value of " + securityName + " is $" + value);
         System.out.print("Enter the amount you would like to purchase: ");
         int amount = io.scanInt();
@@ -118,14 +126,13 @@ public class BrokerMenu {
             System.out.println("Purchase cancelled.");
             return;
         }
-        double buyValue = Math.round((amount * value)*100.0)/100.0;
+        double buyValue = Math.round((amount * value) * 100.0) / 100.0;
         if (buyValue <= bank.getBalance()) {
             bank.withdraw(buyValue);
             curPortfolio.add(new Security(securityName, amount, value));
             bank.addTransaction(
-                "Bought " + amount + " of " + securityName +
-                " for $" + buyValue
-            );
+                    "Bought " + amount + " of " + securityName +
+                            " for $" + buyValue);
             System.out.println("Purchase successful.");
             return;
         }
@@ -137,7 +144,7 @@ public class BrokerMenu {
         if (selection == null) {
             return;
         }
-        
+
         int sellAmount = getSellAmount(selection);
         if (sellAmount == -1) {
             return;
@@ -176,11 +183,11 @@ public class BrokerMenu {
             curPortfolio.remove(selection);
         }
         double sellValueRaw = sellAmount * selection.getValue();
-        double sellValueRounded = Math.round(sellValueRaw*100.0)/100.0;
+        double sellValueRounded = Math.round(sellValueRaw * 100.0) / 100.0;
         bank.deposit(sellValueRounded);
         bank.addTransaction(
-            "Sold " + sellAmount + " of " + selection.getName() +
-            " for $" + sellValueRounded);
+                "Sold " + sellAmount + " of " + selection.getName() +
+                        " for $" + sellValueRounded);
         System.out.println("Sale successful. Value of sale: $" + sellValueRounded);
     }
 
