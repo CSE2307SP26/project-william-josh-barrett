@@ -7,7 +7,7 @@ public class Security {
     private String name;
     private int amount;
     private double curValue;
-    private double buyValue;
+    protected double buyValue;
     private Random rng;
     
     public Security(String name, int amount, double value) {
@@ -40,5 +40,9 @@ public class Security {
             buyValue = 0;
         }
         return curValue;
+    }
+
+    public String getValueFormatted() {
+        return "    Value: $" + String.valueOf(getValue());
     }
 }
