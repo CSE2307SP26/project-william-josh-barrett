@@ -152,7 +152,6 @@ public class AdminMenu extends CustomerMenu {
                 break;
             case SWITCH:
                 switchAccountsUI();
-                switch_account = true;
                 break;
             case CREATE:
                 createAccountUI();
