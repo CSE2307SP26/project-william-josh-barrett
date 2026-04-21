@@ -1,7 +1,7 @@
 package main;
 
 public class StartMenu {
-    
+
     protected boolean exit;
     protected boolean switch_account;
 

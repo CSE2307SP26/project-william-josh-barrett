@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class CustomerMenu extends StartMenu {
 
     protected BrokerMenu broker;
-    
+
     private static enum customerSelections {
         MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD, EXIT,
         MAX
