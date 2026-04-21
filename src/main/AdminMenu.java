@@ -5,10 +5,7 @@ import java.util.ArrayList;
 public class AdminMenu extends CustomerMenu {
 
     private static final int EMPTY = 0;
-
-    private boolean exit;
-    private boolean switch_account;
-
+    
     private static enum adminSelections {
         MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD,
         COLLECT_FEE, ADD_INTEREST, UNLOCK_ACCOUNT, EXIT, MAX

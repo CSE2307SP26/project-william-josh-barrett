@@ -1,8 +1,9 @@
 package main;
 
 public class StartMenu {
-
-    private boolean exit;
+    
+    protected boolean exit;
+    protected boolean switch_account;
 
     protected BankManager bank;
     protected IOUtils io;
@@ -54,6 +55,8 @@ public class StartMenu {
         if (bank.isAdminLoggedIn()) {
             System.out.println("Logged in as admin.");
         }
+
+        switch_account = true;
     }
 
     public void loginUI() {
@@ -112,6 +115,10 @@ public class StartMenu {
             if (exit) {
                 exit = false;
                 return EXIT;
+            }
+            if (switch_account) {
+                switch_account = false;
+                return SWITCH;
             }
         }
     }
