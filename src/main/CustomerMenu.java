@@ -127,7 +127,7 @@ public class CustomerMenu extends StartMenu {
             System.out.println("Successfully withdrew $" + withdrawalAmount);
         } else {
             System.out.println(
-                    "Error: Withdrawal was rejected. Your account may have been locked due to daily limit violation. Check the transaction history for details.");
+                    "Error: Your account may have been locked due to daily limit violation. Check the transaction history for details.");
         }
 
     }
