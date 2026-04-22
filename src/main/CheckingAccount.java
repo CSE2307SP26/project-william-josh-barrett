@@ -91,11 +91,11 @@ public class CheckingAccount extends BankAccount {
     }
 
     /**
-     * Override withdraw to enforce daily transaction limits
+     * Override withdraw to enforce daily transaction limits.
+     * Locks the account if daily limit is violated (suspicious activity).
      * 
      * @param amount the amount to withdraw
-     * @throws IllegalArgumentException if amount would exceed daily limit or
-     *                                  balance
+     * @throws IllegalArgumentException if amount would exceed balance
      */
     @Override
     public void withdraw(double amount) {
@@ -106,10 +106,14 @@ public class CheckingAccount extends BankAccount {
             throw new IllegalArgumentException("Insufficient funds for withdrawal");
         }
         if (!canWithdraw(amount)) {
+            // Lock account on daily limit violation (suspicious activity)
+            this.lockAccount();
+            this.addTransaction("ACCOUNT LOCKED: Daily withdrawal limit exceeded. " +
+                    "Attempted: $" + amount + ", Remaining: $" + getRemainingDailyWithdrawal());
             throw new IllegalArgumentException(
-                    "Withdrawal would exceed daily limit. Daily limit: $" + dailyTransactionLimit +
-                            ", already withdrawn: $" + dailyWithdrawalTotal +
-                            ", requested: $" + amount);
+                    "Daily limit exceeded. Account locked for security. Please contact admin to unlock." +
+                            "Daily limit: $" + dailyTransactionLimit +
+                            ", already withdrawn: $" + dailyWithdrawalTotal);
         }
 
         // Call parent withdraw method
