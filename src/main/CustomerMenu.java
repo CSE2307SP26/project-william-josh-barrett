@@ -7,7 +7,7 @@ public class CustomerMenu extends StartMenu {
     protected BrokerMenu broker;
 
     private static enum customerSelections {
-        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD, EXIT,
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, VIEW_ACCOUNTS, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD, EXIT,
         MAX
     }
 
@@ -26,12 +26,13 @@ public class CustomerMenu extends StartMenu {
         System.out.println("3. Make a withdrawal");
         System.out.println("4. Check account balance");
         System.out.println("5. Check transaction history");
-        System.out.println("6. Open securities brokerage");
-        System.out.println("7. Switch accounts");
-        System.out.println("8. Create an account");
-        System.out.println("9. Close an account");
-        System.out.println("10. Set account password/pin");
-        System.out.println("11. Exit the app");
+        System.out.println("6. View all account names and account types");
+        System.out.println("7. Open securities brokerage");
+        System.out.println("8. Switch accounts");
+        System.out.println("9. Create an account");
+        System.out.println("10. Close an account");
+        System.out.println("11. Set account password/pin");
+        System.out.println("12. Exit the app");
     }
 
     protected boolean handleLockedAccount() {
@@ -139,7 +140,6 @@ public class CustomerMenu extends StartMenu {
 
     public void displayTransactionHistory() {
         ArrayList<String> history = bank.getTransactionHistory();
-
         System.out.println("\nTransaction History:");
         if (history.isEmpty()) {
             System.out.println("No transactions found.");
@@ -149,6 +149,10 @@ public class CustomerMenu extends StartMenu {
         for (String entry : history) {
             System.out.println(entry);
         }
+    }
+
+    public void viewAccountsUI() {
+        bank.displayCustomerAccountsAndTypes();
     }
 
     public void switchAccountsUI() {
@@ -201,6 +205,9 @@ public class CustomerMenu extends StartMenu {
                 break;
             case HISTORY:
                 displayTransactionHistory();
+                break;
+            case VIEW_ACCOUNTS:
+                viewAccountsUI();
                 break;
             case BROKERAGE:
                 broker.open();
