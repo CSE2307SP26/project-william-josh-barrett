@@ -7,7 +7,7 @@ public class AdminMenu extends CustomerMenu {
     private static final int EMPTY = 0;
 
     private static enum adminSelections {
-        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD,
+        MIN, DEPOSIT, TRANSFER, WITHDRAW, CHECK_BALANCE, HISTORY, VIEW_ACCOUNTS,  BROKERAGE, SWITCH, CREATE, CLOSE, SET_PASSWORD,
         COLLECT_FEE, ADD_INTEREST, UNLOCK_ACCOUNT, EXIT, MAX
     }
 
@@ -25,15 +25,16 @@ public class AdminMenu extends CustomerMenu {
         System.out.println("3. Make a withdrawal");
         System.out.println("4. Check account balance");
         System.out.println("5. Check transaction history");
-        System.out.println("6. Open securities brokerage");
-        System.out.println("7. Switch accounts");
-        System.out.println("8. Create an account");
-        System.out.println("9. Close an account");
-        System.out.println("10. Set account password/pin");
-        System.out.println("11. Collect a fee");
-        System.out.println("12. Add an interest payment");
-        System.out.println("13. Unlock an account");
-        System.out.println("14. Exit the app");
+        System.out.println("6. View all account names and account types");
+        System.out.println("7. Open securities brokerage");
+        System.out.println("8. Switch accounts");
+        System.out.println("9. Create an account");
+        System.out.println("10. Close an account");
+        System.out.println("11. Set account password/pin");
+        System.out.println("12. Collect a fee");
+        System.out.println("13. Add an interest payment");
+        System.out.println("14. Unlock an account");
+        System.out.println("15. Exit the app");
     }
 
     public void unlockAccountUI() {
@@ -146,6 +147,9 @@ public class AdminMenu extends CustomerMenu {
                 break;
             case HISTORY:
                 displayTransactionHistory();
+                break;
+            case VIEW_ACCOUNTS:
+                viewAccountsUI();
                 break;
             case BROKERAGE:
                 broker.open();

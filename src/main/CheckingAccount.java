@@ -20,6 +20,10 @@ public class CheckingAccount extends BankAccount {
         this.dailyWithdrawalTotal = 0;
     }
 
+    @Override
+    public String getAccountType() {
+        return "Checking";
+    }
     CheckingAccount(String name, double dailyTransactionLimit) {
         super(name);
         validateDailyLimit(dailyTransactionLimit);

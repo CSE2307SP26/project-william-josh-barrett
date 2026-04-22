@@ -234,6 +234,22 @@ public class BankManager {
         return customerAccounts;
     }
 
+    public void displayCustomerAccountsAndTypes() {
+        ArrayList<BankAccount> customerAccounts = getCustomerAccounts();
+
+        if (customerAccounts.isEmpty()) {
+            System.out.println("No customer accounts found.");
+            return;
+        }
+
+        System.out.println("Your accounts:");
+        int index = 1;
+        for (BankAccount account : customerAccounts) {
+            System.out.println(index + ". " + account.getName() + " - " + account.getAccountType());
+            index++;
+        }
+    }
+
     private void handleSuspiciousActivity(BankAccount account, String message) {
         if (message == null) {
             return;
@@ -323,3 +339,5 @@ public class BankManager {
         }
     }
 }
+
+

@@ -19,6 +19,10 @@ public class SavingsAccount extends BankAccount {
         super(name);
         this.interestRate = DEFAULT_INTEREST_RATE;
     }
+    @Override
+    public String getAccountType() {
+        return "Savings";
+    }
 
     SavingsAccount(String name, double interestRate) {
         super(name);
