@@ -136,4 +136,17 @@ public class BankAccountTest {
         BankAccount testAccount = new BankAccount("testName");
         assertEquals(testAccount.getAccountType(), "Bank Account");
     }
+
+    @Test
+    public void testGetAmountOwed() {
+        BankAccount testAccount = new BankAccount("testName");
+        assertEquals(testAccount.getAmountOwed(), 0.0, 0.0001);
+    }
+
+    @Test
+    public void testSetAmountOwed() {
+        BankAccount testAccount = new BankAccount("testName");
+        testAccount.setAmountOwed(123.5);
+        assertEquals(testAccount.getAmountOwed(), 123.5, 0.0001);
+    }
 }

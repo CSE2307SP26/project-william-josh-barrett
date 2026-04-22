@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class BankAccount {
 
+    private double amountOwed;
     private double balance;
     private String accountName;
     private String password;
@@ -13,6 +14,7 @@ public class BankAccount {
     private int suspiciousTransactionCount;
 
     public BankAccount(String name) {
+        this.amountOwed = 0;
         this.balance = 0;
         this.accountName = name;
         this.password = null;
@@ -21,6 +23,14 @@ public class BankAccount {
         this.transactionHistory.add("Account created.");
         this.locked = false;
         this.suspiciousTransactionCount = 0;
+    }
+
+    public double getAmountOwed() {
+        return amountOwed;
+    }
+
+    public void setAmountOwed(double value) {
+        amountOwed = value;
     }
 
     public void setPassword(String password) {
