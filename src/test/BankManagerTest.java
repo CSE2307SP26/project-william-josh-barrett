@@ -421,4 +421,21 @@ public class BankManagerTest {
         realList.add(bank.createAccount("test_2"));
         assertEquals(realList, bank.getCustomerAccounts());
     }
+
+    @Test
+    public void testGetAmountOwed() {
+        BankManager bank = new BankManager();
+        bank.createAccount("");
+        bank.switchAccounts(1);
+        assertEquals(bank.getAmountOwed(), 0.0, 0.0001);
+    }
+
+    @Test
+    public void testSetAmountOwed() {
+        BankManager bank = new BankManager();
+        bank.createAccount("");
+        bank.switchAccounts(1);
+        bank.setAmountOwed(123.5);
+        assertEquals(bank.getAmountOwed(), 123.5, 0.0001);
+    }
 }

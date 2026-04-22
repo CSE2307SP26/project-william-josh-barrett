@@ -30,6 +30,14 @@ public class BankManager {
         return curAccount.isLocked();
     }
 
+    public double getAmountOwed() {
+        return curAccount.getAmountOwed();
+    }
+
+    public void setAmountOwed(double value) {
+        curAccount.setAmountOwed(value);
+    }
+
     public void setPassword(String password) {
         curAccount.setPassword(password);
     }
