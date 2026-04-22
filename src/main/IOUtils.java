@@ -44,6 +44,24 @@ public class IOUtils {
         }
     }
 
+    public double scanPositiveDouble() {
+        while (true) {
+            double amount = scanDouble();
+            if (amount > 0.0) {
+                return amount;
+            }
+            System.out.print("Please enter a value greater than zero: ");
+        }
+    }
+
+    public boolean scanAffirmative() {
+        String affirmative = scanLine();
+        if (affirmative.equalsIgnoreCase("y")) {
+            return true;
+        }
+        return false;
+    }
+
     public String scanLine() {
         return keyboardInput.nextLine();
     }
