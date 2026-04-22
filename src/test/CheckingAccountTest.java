@@ -1,10 +1,10 @@
 package test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import main.CheckingAccount;
 
@@ -73,5 +73,11 @@ public class CheckingAccountTest {
         acc.deposit(1000);
         acc.withdraw(200);
         assertEquals(800, acc.getBalance(), 0.0001);
+    }
+
+    @Test
+    public void testGetAccountType() {
+        CheckingAccount testAccount = new CheckingAccount("testName");
+        assertEquals(testAccount.getAccountType(), "Checking");
     }
 }

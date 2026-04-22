@@ -3,9 +3,9 @@ package test;
 import main.BankAccount;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertThrows;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class BankAccountTest {
 
@@ -129,5 +129,11 @@ public class BankAccountTest {
     public void testGetName() {
         BankAccount testAccount = new BankAccount("testName");
         assertEquals(testAccount.getName(), "testName");
+    }
+
+    @Test
+    public void testGetAccountType() {
+        BankAccount testAccount = new BankAccount("testName");
+        assertEquals(testAccount.getAccountType(), "Bank Account");
     }
 }

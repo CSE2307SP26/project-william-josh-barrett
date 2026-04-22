@@ -1,9 +1,9 @@
 package test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import main.SavingsAccount;
 
@@ -71,6 +71,10 @@ public class SavingsAccountTest {
         });
     }
 
-    // Interest Calculation Tests
+    @Test
+    public void testGetAccountType() {
+        SavingsAccount testAccount = new SavingsAccount("testName");
+        assertEquals(testAccount.getAccountType(), "Savings");
+    }
 
 }
