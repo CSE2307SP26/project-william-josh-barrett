@@ -36,4 +36,10 @@ public class SecurityTest {
         }
     }
 
+    @Test
+    public void testGetValueFormatted() {
+        Security s = new Security("", 1, 20);
+        assert(s.getValueFormatted().contains("    Value: $"));
+    }
+
 }

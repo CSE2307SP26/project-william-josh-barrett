@@ -7,13 +7,14 @@ import java.util.Scanner;
 public class BrokerMenu {
 
     private static enum brokerSelections {
-        MIN, BUY, SELL, DISPLAY, EXIT, MAX
+        MIN, BUY, SHORT_SELL, SELL, DISPLAY, LOAN, EXIT, MAX
     }
 
     private ArrayList<Security> curPortfolio;
     private Scanner keyboardInput;
     private BankManager bank;
     private IOUtils io;
+    private LoanManager loanMenu;
     private boolean exit;
     private Random rng;
 
@@ -22,6 +23,7 @@ public class BrokerMenu {
         this.rng = new Random();
         this.bank = bank;
         this.io = io;
+        this.loanMenu = new LoanManager(io, bank);
     }
 
     public void updatePortfolio() {
@@ -42,6 +44,10 @@ public class BrokerMenu {
         return security != null;
     }
 
+    public boolean isShorted(String name) {
+        return name.contains("(shorted)");
+    }
+
     public void open() {
         exit = false;
         updatePortfolio();
@@ -59,9 +65,11 @@ public class BrokerMenu {
         System.out.println("Welcome to the 237 Bank Brokerage!");
         System.out.println("Logged in as: " + bank.getCurAccountName());
         System.out.println("1. Buy a security");
-        System.out.println("2. Sell a security");
-        System.out.println("3. View your portfolio");
-        System.out.println("4. Exit the brokerage");
+        System.out.println("2. Open a short position");
+        System.out.println("3. Sell a security");
+        System.out.println("4. View your portfolio");
+        System.out.println("5. Take out a loan");
+        System.out.println("6. Exit the brokerage");
     }
 
     public void doSelectedAction(int selection) {
@@ -69,11 +77,17 @@ public class BrokerMenu {
             case BUY:
                 attemptBuySecurity();
                 break;
+            case SHORT_SELL:
+                attemptShort();
+                break;
             case SELL:
                 attemptSellSecurity();
                 break;
             case DISPLAY:
                 displayPortfolio();
+                break;
+            case LOAN:
+                loanMenu.open();
                 break;
             case EXIT:
                 exit = true;
@@ -127,16 +141,31 @@ public class BrokerMenu {
             return;
         }
         double buyValue = Math.round((amount * value) * 100.0) / 100.0;
-        if (buyValue <= bank.getBalance()) {
-            bank.withdraw(buyValue);
-            curPortfolio.add(new Security(securityName, amount, value));
-            bank.addTransaction(
-                    "Bought " + amount + " of " + securityName +
-                            " for $" + buyValue);
-            System.out.println("Purchase successful.");
+        boolean shorted = isShorted(securityName);
+        if (!shorted && buyValue > bank.getBalance()) {
+            System.out.println("Insufficient funds to complete purchase.");
             return;
         }
-        System.out.println("Insufficient funds to complete purchase.");
+        if (shorted) {
+            curPortfolio.add(new Short(securityName, amount, buyValue));
+        } else {
+            bank.withdraw(buyValue);
+            curPortfolio.add(new Security(securityName, amount, value));
+        }
+        bank.addTransaction(
+                "Bought " + amount + " of " + securityName +
+                        " for $" + buyValue);
+        System.out.println("Purchase successful.");
+    }
+
+    public void attemptShort() {
+        System.out.print("Please enter the name of the security you want to short: ");
+        String shortName = keyboardInput.nextLine();
+        if (checkSecurityOwnership(shortName)) {
+            System.out.println("Please close your short position on this security before opening a new one.");
+            return;
+        }
+        buyNewSecurity(shortName + " (shorted)");
     }
 
     public void attemptSellSecurity() {
@@ -178,13 +207,24 @@ public class BrokerMenu {
     }
 
     public void sellSecurity(Security selection, int sellAmount) {
+        double sellValueRaw = sellAmount * selection.getValue();
+        double sellValueRounded = Math.round(sellValueRaw * 100.0) / 100.0;
+
+        if (sellValueRounded > 0) {
+            bank.deposit(sellValueRounded);
+        }
+        else if (sellValueRounded < 0) {
+            if (Math.abs(sellValueRounded) > bank.getBalance()) {
+                System.out.println("You do not have enough funds to close your position!");
+                return;
+            }
+            bank.withdraw(Math.abs(sellValueRounded));
+        }
+
         selection.setAmount(selection.getAmount() - sellAmount);
         if (selection.getAmount() == 0) {
             curPortfolio.remove(selection);
         }
-        double sellValueRaw = sellAmount * selection.getValue();
-        double sellValueRounded = Math.round(sellValueRaw * 100.0) / 100.0;
-        bank.deposit(sellValueRounded);
         bank.addTransaction(
                 "Sold " + sellAmount + " of " + selection.getName() +
                         " for $" + sellValueRounded);
@@ -201,7 +241,7 @@ public class BrokerMenu {
         for (Security security : curPortfolio) {
             System.out.println(index + ". " + security.getName());
             System.out.println("    Amount: " + security.getAmount());
-            System.out.println("    Value: $" + security.getValue());
+            System.out.println(security.getValueFormatted());
             index++;
         }
         return true;

@@ -57,13 +57,55 @@ public class BankManager {
     public ArrayList<Security> getPortfolio() {
         return curAccount.getPortfolio();
     }
-
+    
     public double getAccountBalance(int index) {
         return accounts.get(index).getBalance();
     }
 
     public ArrayList<String> getTransactionHistory() {
         return curAccount.getTransactionHistory();
+    }
+
+    public ArrayList<String> filterTransactionHistory(String transactionType) {
+        ArrayList<String> matches = new ArrayList<String>();
+        ArrayList<String> history = getTransactionHistory();
+
+        if (transactionType == null) {
+            return matches;
+        }
+
+        String loweredType = transactionType.toLowerCase();
+
+        for (String entry : history) {
+            String loweredEntry = entry.toLowerCase();
+
+            if (loweredType.equals("deposit")) {
+                if (loweredEntry.contains("deposit")) {
+                    matches.add(entry);
+                }
+            } else if (loweredType.equals("withdrawal")) {
+                if (loweredEntry.contains("withdrew") || loweredEntry.contains("withdrawal")) {
+                    matches.add(entry);
+                }
+            } else if (loweredType.equals("transfer")) {
+                if (loweredEntry.contains("transfer")) {
+                    matches.add(entry);
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    public void printTransactionEntries(ArrayList<String> entries) {
+        if (entries.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+
+        for (String entry : entries) {
+            System.out.println(entry);
+        }
     }
 
     public void addTransaction(String message) {

@@ -1,7 +1,5 @@
 package main;
 
-import java.util.ArrayList;
-
 public class CustomerMenu extends StartMenu {
 
     protected BrokerMenu broker;
@@ -139,15 +137,40 @@ public class CustomerMenu extends StartMenu {
     }
 
     public void displayTransactionHistory() {
-        ArrayList<String> history = bank.getTransactionHistory();
-        System.out.println("\nTransaction History:");
-        if (history.isEmpty()) {
-            System.out.println("No transactions found.");
-            return;
-        }
+        while (true) {
+            System.out.println("\nTransaction History Menu:");
+            System.out.println("1. View full transaction history");
+            System.out.println("2. View deposits only");
+            System.out.println("3. View withdrawals only");
+            System.out.println("4. View transfers only");
+            System.out.println("5. Return to previous menu");
 
-        for (String entry : history) {
-            System.out.println(entry);
+            int selection = io.getUserSelection(6);
+
+            System.out.println();
+
+            switch (selection) {
+                case 1:
+                    System.out.println("Full Transaction History:");
+                    bank.printTransactionEntries(bank.getTransactionHistory());
+                    break;
+                case 2:
+                    System.out.println("Deposit History:");
+                    bank.printTransactionEntries(bank.filterTransactionHistory("deposit"));
+                    break;
+                case 3:
+                    System.out.println("Withdrawal History:");
+                    bank.printTransactionEntries(bank.filterTransactionHistory("withdrawal"));
+                    break;
+                case 4:
+                    System.out.println("Transfer History:");
+                    bank.printTransactionEntries(bank.filterTransactionHistory("transfer"));
+                    break;
+                case 5:
+                    return;
+                default:
+                    assert(false);
+            }
         }
     }
 
