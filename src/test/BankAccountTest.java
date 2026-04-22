@@ -130,4 +130,10 @@ public class BankAccountTest {
         BankAccount testAccount = new BankAccount("testName");
         assertEquals(testAccount.getName(), "testName");
     }
+
+    @Test
+    public void testGetAccountType() {
+        BankAccount testAccount = new BankAccount("testName");
+        assertEquals(testAccount.getAccountType(), "Bank Account");
+    }
 }

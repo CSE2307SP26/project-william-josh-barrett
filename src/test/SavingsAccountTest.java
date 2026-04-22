@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import main.BankAccount;
 import main.SavingsAccount;
 
 public class SavingsAccountTest {
@@ -71,6 +72,10 @@ public class SavingsAccountTest {
         });
     }
 
-    // Interest Calculation Tests
+    @Test
+    public void testGetAccountType() {
+        BankAccount testAccount = new BankAccount("testName");
+        assertEquals(testAccount.getAccountType(), "Savings");
+    }
 
 }

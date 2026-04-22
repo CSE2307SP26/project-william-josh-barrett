@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import main.BankAccount;
 import main.CheckingAccount;
 
 public class CheckingAccountTest {
@@ -74,5 +75,11 @@ public class CheckingAccountTest {
         acc.deposit(1000);
         acc.withdraw(200);
         assertEquals(800, acc.getBalance(), 0.0001);
+    }
+
+    @Test
+    public void testGetAccountType() {
+        BankAccount testAccount = new BankAccount("testName");
+        assertEquals(testAccount.getAccountType(), "Checking");
     }
 }
