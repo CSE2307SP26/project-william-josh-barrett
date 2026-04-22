@@ -54,4 +54,18 @@ public class BrokerMenuTest {
         assertEquals(testSecurity.getAmount(), 0);
         assert(!broker.checkSecurityOwnership("testSecurity"));
     }
+
+    @Test
+    public void testIsShorted() {
+        BankManager bank = new BankManager();
+        BrokerMenu broker = new BrokerMenu(new IOUtils(bank), bank);
+        bank.createAccount("test");
+        bank.switchAccounts(1);
+        ArrayList<Security> portfolio = bank.getPortfolio();
+        Security testShort = new Security("testShort (shorted)", 20, 20);
+        portfolio.add(testShort);
+        broker.updatePortfolio();
+
+        assert(broker.isShorted("testShort (shorted)"));
+    }
 }
