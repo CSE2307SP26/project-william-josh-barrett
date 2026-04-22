@@ -7,13 +7,14 @@ import java.util.Scanner;
 public class BrokerMenu {
 
     private static enum brokerSelections {
-        MIN, BUY, SHORT_SELL, SELL, DISPLAY, EXIT, MAX
+        MIN, BUY, SHORT_SELL, SELL, DISPLAY, LOAN, EXIT, MAX
     }
 
     private ArrayList<Security> curPortfolio;
     private Scanner keyboardInput;
     private BankManager bank;
     private IOUtils io;
+    private LoanManager loanMenu;
     private boolean exit;
     private Random rng;
 
@@ -22,6 +23,7 @@ public class BrokerMenu {
         this.rng = new Random();
         this.bank = bank;
         this.io = io;
+        this.loanMenu = new LoanManager(io, bank);
     }
 
     public void updatePortfolio() {
@@ -66,7 +68,8 @@ public class BrokerMenu {
         System.out.println("2. Open a short position");
         System.out.println("3. Sell a security");
         System.out.println("4. View your portfolio");
-        System.out.println("5. Exit the brokerage");
+        System.out.println("5. Take out a loan");
+        System.out.println("6. Exit the brokerage");
     }
 
     public void doSelectedAction(int selection) {
@@ -82,6 +85,9 @@ public class BrokerMenu {
                 break;
             case DISPLAY:
                 displayPortfolio();
+                break;
+            case LOAN:
+                loanMenu.open();
                 break;
             case EXIT:
                 exit = true;
