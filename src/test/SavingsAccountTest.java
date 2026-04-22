@@ -1,11 +1,10 @@
 package test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import main.BankAccount;
 import main.SavingsAccount;
 
 public class SavingsAccountTest {
@@ -74,7 +73,7 @@ public class SavingsAccountTest {
 
     @Test
     public void testGetAccountType() {
-        BankAccount testAccount = new BankAccount("testName");
+        SavingsAccount testAccount = new SavingsAccount("testName");
         assertEquals(testAccount.getAccountType(), "Savings");
     }
 
