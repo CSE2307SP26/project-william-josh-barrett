@@ -95,8 +95,10 @@ public class CheckingAccount extends BankAccount {
      * Locks the account if daily limit is violated (suspicious activity).
      * 
      * The withdrawal is allowed to proceed, then checked against the limit.
-     * If the limit is exceeded, the account is locked after the withdrawal succeeds.
-     * This prevents the "payment without deduction" bug where rejecting a withdrawal
+     * If the limit is exceeded, the account is locked after the withdrawal
+     * succeeds.
+     * This prevents the "payment without deduction" bug where rejecting a
+     * withdrawal
      * before it happens allows fraudsters to make transfers without losing money.
      * 
      * @param amount the amount to withdraw
@@ -116,7 +118,7 @@ public class CheckingAccount extends BankAccount {
         this.dailyWithdrawalTotal += amount;
         this.dailyWithdrawalTotal = Math.round(dailyWithdrawalTotal * 100.0) / 100.0;
         this.addTransaction("Daily withdrawal total: $" + dailyWithdrawalTotal + " / $" + dailyTransactionLimit);
-        
+
         // CHECK LIMIT AFTER WITHDRAWAL - if exceeded, lock account for security
         if (dailyWithdrawalTotal > dailyTransactionLimit) {
             this.lockAccount();
