@@ -67,7 +67,12 @@ public class CustomerMenu extends StartMenu {
             }
             System.out.println("A deposit larger than 0 is required. Please try again.");
         }
-        bank.deposit(depositAmount);
+        try {
+            bank.deposit(depositAmount);
+            System.out.println("Successfully deposited $" + depositAmount);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Deposit failed: " + e.getMessage());
+        }
     }
 
     public void transferUI() {
@@ -106,12 +111,25 @@ public class CustomerMenu extends StartMenu {
             }
             System.out.println("A withdrawal larger than 0 is required. Please try again.");
         }
-        try {
-            bank.withdraw(withdrawalAmount);
-            System.out.println("Successfully withdrew $" + withdrawalAmount);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Withdrawal amount exceeds account balance. Please try again.");
+
+        if (bank.isLocked()) {
+            System.out.println("Error: Your account is locked due to suspicious activity.");
+            return;
         }
+
+        if (withdrawalAmount > bank.getBalance()) {
+            System.out.println("Error: Insufficient funds. Your balance is $" + bank.getBalance() +
+                    ", but you requested $" + withdrawalAmount);
+            return;
+        }
+
+        if (bank.withdraw(withdrawalAmount)) {
+            System.out.println("Successfully withdrew $" + withdrawalAmount);
+        } else {
+            System.out.println(
+                    "Error: Your account may have been locked due to daily limit violation. Check the transaction history for details.");
+        }
+
     }
 
     public void getBalanceUI() {
