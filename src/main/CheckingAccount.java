@@ -94,6 +94,11 @@ public class CheckingAccount extends BankAccount {
      * Override withdraw to enforce daily transaction limits.
      * Locks the account if daily limit is violated (suspicious activity).
      * 
+     * The withdrawal is allowed to proceed, then checked against the limit.
+     * If the limit is exceeded, the account is locked after the withdrawal succeeds.
+     * This prevents the "payment without deduction" bug where rejecting a withdrawal
+     * before it happens allows fraudsters to make transfers without losing money.
+     * 
      * @param amount the amount to withdraw
      * @throws IllegalArgumentException if amount would exceed balance
      */
@@ -105,21 +110,18 @@ public class CheckingAccount extends BankAccount {
         if (amount > getBalance()) {
             throw new IllegalArgumentException("Insufficient funds for withdrawal");
         }
-        if (!canWithdraw(amount)) {
-            // Lock account on daily limit violation (suspicious activity)
-            this.lockAccount();
-            this.addTransaction("ACCOUNT LOCKED: Daily withdrawal limit exceeded. " +
-                    "Attempted: $" + amount + ", Remaining: $" + getRemainingDailyWithdrawal());
-            throw new IllegalArgumentException(
-                    "Daily limit exceeded. Account locked for security. Please contact admin to unlock." +
-                            "Daily limit: $" + dailyTransactionLimit +
-                            ", already withdrawn: $" + dailyWithdrawalTotal);
-        }
 
-        // Call parent withdraw method
+        // Call parent withdraw method FIRST - allow the withdrawal to happen
         super.withdraw(amount);
         this.dailyWithdrawalTotal += amount;
         this.dailyWithdrawalTotal = Math.round(dailyWithdrawalTotal * 100.0) / 100.0;
         this.addTransaction("Daily withdrawal total: $" + dailyWithdrawalTotal + " / $" + dailyTransactionLimit);
+        
+        // CHECK LIMIT AFTER WITHDRAWAL - if exceeded, lock account for security
+        if (dailyWithdrawalTotal > dailyTransactionLimit) {
+            this.lockAccount();
+            this.addTransaction("ACCOUNT LOCKED: Daily withdrawal limit exceeded. " +
+                    "Withdrawal: $" + amount + ", Daily total: $" + dailyWithdrawalTotal);
+        }
     }
 }
