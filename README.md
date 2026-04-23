@@ -1,4 +1,4 @@
-# project26 - Iteration 2
+# project26 - Iteration 3
 
 ## Team Members:
 
@@ -26,15 +26,19 @@ Iteration 2:
 5. A user should be able to purchase securities with their account balance
 6. A user should be able to check the value of their securities and sell them
 
-    
+Iteration 3:
+1. A user should be able to earn interest on their savings account balance
+2. An admin should be able to set transaction limits on a checking account
+3. A user should be able to short sell a security
+4. A user should be able to take out a loan
+5. A user should be able to view the names and account types of all open accounts
+6. A user should be able to filter their transaction history by deposits, withdrawals, or transfers
+
 ## What user stories were completed in this iteration?
-  All of the user stories listed under "Iteration 2" were completed this iteration.  
-  
-## What user stories do you intend to complete next iteration?
-  We haven't brainstormed new user stories yet. As an idea, however- I (William) might expand my "brokerage" concept to allow users to take out loans.  
+  All of the user stories listed under "Iteration 3" were completed this iteration.  
 
 ## Is there anything that you implemented but doesn't currently work?
-  To the best of our knowledge, all of our implemented features work.  
+  To the best of my knowledge, all of our implemented features work.  
 
 ## What commands are needed to compile and run your code from the command line?
   To compile and run the program, simply run runApp.sh. Here are instructions for MacOS/Linux:  
