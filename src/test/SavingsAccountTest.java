@@ -1,8 +1,9 @@
 package test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import main.SavingsAccount;
 
@@ -19,4 +20,61 @@ public class SavingsAccountTest {
         SavingsAccount acc = new SavingsAccount("John");
         assertEquals(0, acc.getBalance(), 0.0001);
     }
+
+    // Interest Rate Tests
+    @Test
+    public void testDefaultInterestRate() {
+        SavingsAccount acc = new SavingsAccount("John");
+        assertEquals(0.02, acc.getInterestRate(), 0.0001);
+    }
+
+    // Deposit and Withdrawal Tests
+    @Test
+    public void testDeposit() {
+        SavingsAccount acc = new SavingsAccount("John");
+        acc.deposit(100);
+        assertEquals(100, acc.getBalance(), 0.0001);
+    }
+
+    @Test
+    public void testMultipleDeposits() {
+        SavingsAccount acc = new SavingsAccount("John");
+        acc.deposit(100);
+        acc.deposit(50);
+        acc.deposit(25);
+        assertEquals(175, acc.getBalance(), 0.0001);
+    }
+
+    @Test
+    public void testWithdraw() {
+        SavingsAccount acc = new SavingsAccount("John");
+        acc.deposit(100);
+        acc.withdraw(30);
+        assertEquals(70, acc.getBalance(), 0.0001);
+    }
+
+    @Test
+    public void testWithdrawMoreThanBalance() {
+        SavingsAccount acc = new SavingsAccount("John");
+        acc.deposit(100);
+        assertThrows(IllegalArgumentException.class, () -> {
+            acc.withdraw(150);
+        });
+    }
+
+    @Test
+    public void testNegativeWithdraw() {
+        SavingsAccount acc = new SavingsAccount("John");
+        acc.deposit(100);
+        assertThrows(IllegalArgumentException.class, () -> {
+            acc.withdraw(-10);
+        });
+    }
+
+    @Test
+    public void testGetAccountType() {
+        SavingsAccount testAccount = new SavingsAccount("testName");
+        assertEquals(testAccount.getAccountType(), "Savings");
+    }
+
 }

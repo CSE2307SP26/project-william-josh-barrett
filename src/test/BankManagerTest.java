@@ -1,6 +1,8 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
@@ -19,6 +21,54 @@ public class BankManagerTest {
         bank.createAccount("test_name");
         bank.switchAccounts(1);
         assertEquals(bank.getCurAccountName(), "test_name");
+    }
+
+    @Test
+    public void testUnlockAccount() {
+        BankManager bank = new BankManager();
+        bank.createAccount("test_name");
+        bank.switchAccounts(1);
+        bank.getCustomerAccounts().get(0).lockAccount();
+        assertTrue(bank.isLocked());
+
+        bank.switchAccounts(0); // Admin
+        assertTrue(bank.unlockAccount(1));
+
+        bank.switchAccounts(1);
+        assertFalse(bank.isLocked());
+    }
+
+    @Test
+    public void testUnlockAdminAccount() {
+        BankManager bank = new BankManager();
+        // Index 0 is the admin account, cannot be unlocked/locked via manager
+        assertFalse(bank.unlockAccount(0));
+    }
+
+    @Test
+    public void testWithdrawLockedAccount() {
+        BankManager bank = new BankManager();
+        bank.createAccount("test_locked");
+        bank.switchAccounts(1);
+        bank.deposit(100);
+
+        // Lock the account directly via getter
+        bank.getCustomerAccounts().get(0).lockAccount();
+        assertTrue(bank.isLocked());
+
+        // Withdraw should fail when locked
+        assertFalse(bank.withdraw(50));
+        assertEquals(100, bank.getBalance(), 0.0001);
+
+        // Switch to admin to unlock
+        bank.switchAccounts(0);
+        assertTrue(bank.unlockAccount(1));
+
+        // Switch back and withdraw should succeed
+        bank.switchAccounts(1);
+        assertFalse(bank.isLocked());
+        assertTrue(bank.withdraw(50));
+        assertEquals(50, bank.getBalance(), 0.0001);
     }
 
     @Test
@@ -140,9 +190,7 @@ public class BankManagerTest {
         bank.createAccount("test_1");
         bank.switchAccounts(1);
         bank.deposit(2);
-        assertThrows(IllegalArgumentException.class, () -> {
-            bank.withdraw(-1);
-        });
+        assert (!bank.withdraw(-1));
     }
 
     @Test
@@ -151,9 +199,7 @@ public class BankManagerTest {
         bank.createAccount("test_1");
         bank.switchAccounts(1);
         bank.deposit(2);
-        assertThrows(IllegalArgumentException.class, () -> {
-            bank.withdraw(0);
-        });
+        assert (!bank.withdraw(0));
     }
 
     @Test
@@ -162,9 +208,7 @@ public class BankManagerTest {
         bank.createAccount("test_1");
         bank.switchAccounts(1);
         bank.deposit(2);
-        assertThrows(IllegalArgumentException.class, () -> {
-            bank.withdraw(3);
-        });
+        assert (!bank.withdraw(3));
     }
 
     @Test
@@ -376,5 +420,22 @@ public class BankManagerTest {
         realList.add(bank.createAccount("test_1"));
         realList.add(bank.createAccount("test_2"));
         assertEquals(realList, bank.getCustomerAccounts());
+    }
+
+    @Test
+    public void testGetAmountOwed() {
+        BankManager bank = new BankManager();
+        bank.createAccount("");
+        bank.switchAccounts(1);
+        assertEquals(bank.getAmountOwed(), 0.0, 0.0001);
+    }
+
+    @Test
+    public void testSetAmountOwed() {
+        BankManager bank = new BankManager();
+        bank.createAccount("");
+        bank.switchAccounts(1);
+        bank.setAmountOwed(123.5);
+        assertEquals(bank.getAmountOwed(), 123.5, 0.0001);
     }
 }

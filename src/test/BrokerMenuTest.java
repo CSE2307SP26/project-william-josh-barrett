@@ -8,14 +8,14 @@ import org.junit.Test;
 
 import main.BankManager;
 import main.BrokerMenu;
-import main.MainMenu;
+import main.IOUtils;
 import main.Security;
 
 public class BrokerMenuTest {
 
     public BrokerMenu setUpBroker() {
         BankManager bank = new BankManager();
-        BrokerMenu broker = new BrokerMenu(new MainMenu(), bank);
+        BrokerMenu broker = new BrokerMenu(new IOUtils(bank), bank);
         bank.createAccount("test");
         bank.switchAccounts(1);
         ArrayList<Security> portfolio = bank.getPortfolio();
@@ -53,5 +53,19 @@ public class BrokerMenuTest {
         broker.sellSecurity(testSecurity, 20);
         assertEquals(testSecurity.getAmount(), 0);
         assert(!broker.checkSecurityOwnership("testSecurity"));
+    }
+
+    @Test
+    public void testIsShorted() {
+        BankManager bank = new BankManager();
+        BrokerMenu broker = new BrokerMenu(new IOUtils(bank), bank);
+        bank.createAccount("test");
+        bank.switchAccounts(1);
+        ArrayList<Security> portfolio = bank.getPortfolio();
+        Security testShort = new Security("testShort (shorted)", 20, 20);
+        portfolio.add(testShort);
+        broker.updatePortfolio();
+
+        assert(broker.isShorted("testShort (shorted)"));
     }
 }
