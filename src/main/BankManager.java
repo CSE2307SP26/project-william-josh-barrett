@@ -30,6 +30,14 @@ public class BankManager {
         return curAccount.isLocked();
     }
 
+    public double getAmountOwed() {
+        return curAccount.getAmountOwed();
+    }
+
+    public void setAmountOwed(double value) {
+        curAccount.setAmountOwed(value);
+    }
+
     public void setPassword(String password) {
         curAccount.setPassword(password);
     }
@@ -57,13 +65,55 @@ public class BankManager {
     public ArrayList<Security> getPortfolio() {
         return curAccount.getPortfolio();
     }
-
+    
     public double getAccountBalance(int index) {
         return accounts.get(index).getBalance();
     }
 
     public ArrayList<String> getTransactionHistory() {
         return curAccount.getTransactionHistory();
+    }
+
+    public ArrayList<String> filterTransactionHistory(String transactionType) {
+        ArrayList<String> matches = new ArrayList<String>();
+        ArrayList<String> history = getTransactionHistory();
+
+        if (transactionType == null) {
+            return matches;
+        }
+
+        String loweredType = transactionType.toLowerCase();
+
+        for (String entry : history) {
+            String loweredEntry = entry.toLowerCase();
+
+            if (loweredType.equals("deposit")) {
+                if (loweredEntry.contains("deposit")) {
+                    matches.add(entry);
+                }
+            } else if (loweredType.equals("withdrawal")) {
+                if (loweredEntry.contains("withdrew") || loweredEntry.contains("withdrawal")) {
+                    matches.add(entry);
+                }
+            } else if (loweredType.equals("transfer")) {
+                if (loweredEntry.contains("transfer")) {
+                    matches.add(entry);
+                }
+            }
+        }
+
+        return matches;
+    }
+
+    public void printTransactionEntries(ArrayList<String> entries) {
+        if (entries.isEmpty()) {
+            System.out.println("No transactions found.");
+            return;
+        }
+
+        for (String entry : entries) {
+            System.out.println(entry);
+        }
     }
 
     public void addTransaction(String message) {
@@ -127,6 +177,15 @@ public class BankManager {
             }
         }
         return null;
+    }
+
+    public int findAccountIndexByName(String name) {
+        for (int i = 0; i < accounts.size(); i++) {
+            if (accounts.get(i).getName().equalsIgnoreCase(name)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void printAccounts() {
@@ -198,6 +257,14 @@ public class BankManager {
         return true;
     }
 
+    public boolean unlockAccount(int index) {
+        if (isAdminAccount(index)) {
+            return false;
+        }
+        accounts.get(index).unlockAccount();
+        return true;
+    }
+
     public void switchAccounts(int index) {
         curAccount = accounts.get(index);
     }
@@ -215,6 +282,22 @@ public class BankManager {
             customerAccounts.add(account);
         }
         return customerAccounts;
+    }
+
+    public void displayCustomerAccountsAndTypes() {
+        ArrayList<BankAccount> customerAccounts = getCustomerAccounts();
+
+        if (customerAccounts.isEmpty()) {
+            System.out.println("No customer accounts found.");
+            return;
+        }
+
+        System.out.println("Your accounts:");
+        int index = 1;
+        for (BankAccount account : customerAccounts) {
+            System.out.println(index + ". " + account.getName() + " - " + account.getAccountType());
+            index++;
+        }
     }
 
     private void handleSuspiciousActivity(BankAccount account, String message) {
@@ -249,4 +332,62 @@ public class BankManager {
 
         return false;
     }
+
+    /**
+     * Set the interest rate for a SavingsAccount (admin only).
+     * 
+     * @param accountIndex the index of the account to modify
+     * @param interestRate the new interest rate (must be between 0 and 1)
+     * @return true if successful, false if account is not a SavingsAccount or index
+     *         is invalid
+     */
+    public boolean setSavingsAccountInterestRate(int accountIndex, double interestRate) {
+        if (accountIndex < 0 || accountIndex >= accounts.size()) {
+            return false;
+        }
+
+        BankAccount account = accounts.get(accountIndex);
+        if (!(account instanceof SavingsAccount)) {
+            return false;
+        }
+
+        try {
+            SavingsAccount savingsAccount = (SavingsAccount) account;
+            savingsAccount.setInterestRate(interestRate);
+            account.addTransaction("Interest rate updated to: " + (interestRate * 100) + "%");
+            return true;
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Set the daily transaction limit for a CheckingAccount (admin only).
+     * 
+     * @param accountIndex the index of the account to modify
+     * @param dailyLimit   the new daily transaction limit
+     * @return true if successful, false if account is not a CheckingAccount or
+     *         index is invalid
+     */
+    public boolean setCheckingAccountDailyLimit(int accountIndex, double dailyLimit) {
+        if (accountIndex < 0 || accountIndex >= accounts.size()) {
+            return false;
+        }
+
+        BankAccount account = accounts.get(accountIndex);
+        if (!(account instanceof CheckingAccount)) {
+            return false;
+        }
+
+        try {
+            CheckingAccount checkingAccount = (CheckingAccount) account;
+            checkingAccount.setDailyTransactionLimit(dailyLimit);
+            account.addTransaction("Daily transaction limit updated to: $" + dailyLimit);
+            return true;
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
+    }
 }
+
+
